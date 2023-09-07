@@ -1,0 +1,71 @@
+// @import (reference) '~antd/es/style/themes/index';
+.page {
+  background-image: url('../../assets/login/bg.jpg');
+  background-size: cover;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+.container {
+  display: flex;
+
+  width: 40%;
+  height: auto;
+  overflow: auto;
+  margin: 0 auto;
+  background-color: #fff;
+  padding: 15px;
+  border-radius: 10px;
+
+  .left {
+    width: 47%;
+    box-sizing: border-box;
+    .logo {
+      display: block;
+      width: 85%;
+      margin-bottom: 50px;
+    }
+    .big {
+      display: block;
+      width: 85%;
+      height: auto;
+    }
+  }
+  .right {
+    .title_container {
+      display: flex;
+      margin-top: 10px;
+      margin-bottom: 30px;
+      h2 {
+        font-size: 30px;
+        color: #328eff;
+        margin-top: 0;
+        margin-bottom: 0;
+      }
+      span {
+        font-size: 16px;
+        margin-top: 12px;
+        margin-left: 10px;
+      }
+    }
+    .row {
+      margin-bottom: 23px;
+      text-align: center;
+    }
+    .btn {
+      width: 100%;
+    }
+
+    .qrCode-container {
+      display: flex;
+      margin-bottom: 30px;
+      .ercode {
+        margin-right: 0px;
+      }
+    }
+  }
+}
+:global(.ant-pro-form-login-container) {
+  height: auto !important;
+  padding: 0;
+}
