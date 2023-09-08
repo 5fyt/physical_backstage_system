@@ -1,4 +1,4 @@
-export  type loginParams={
-  username:string
-  password:string
+export type loginParams = {
+  username?: string
+  password?: string
 }

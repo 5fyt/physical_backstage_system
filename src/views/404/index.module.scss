@@ -1,0 +1,12 @@
+.notFound {
+  text-align: center;
+  height: 100%;
+  background-image: url('../../assets/404.jpg');
+  background-size: cover;
+  background-position: center;
+  .title{
+    font-size: 28px;
+    color: #888;
+    padding-top: 100px;
+  }
+}

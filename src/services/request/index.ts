@@ -1,6 +1,7 @@
 import axios from 'axios'
 import type { AxiosInstance } from 'axios'
 import type { requestConfig } from './type'
+import { message } from 'antd'
 
 class HYRequest {
   //声明instance实例成员的类型，可以是any类型但是不够友好
@@ -27,7 +28,15 @@ class HYRequest {
     this.instance.interceptors.response.use(
       (res) => {
         // console.log('全局相应成功的拦截')
-        return res.data
+        if (res.status >= 200 && res.status <= 300) {
+          return res.data
+        } else if (res.status === 401) {
+          localStorage.removeItem('token')
+          localStorage.removeItem('permissions')
+        } else {
+          message.error(`${res.data.message}` || '亲您的网络走丢了，请连接网络')
+        }
+        return res
       },
       (err) => {
         // console.log('全局响应失败后的拦截')

@@ -1,12 +1,14 @@
 import { configureStore } from '@reduxjs/toolkit'
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
 import countReducer from './module/countSlice'
+import loginReducer from './module/login'
 const store = configureStore({
   reducer: {
-    counter: countReducer
+    counter: countReducer,
+    login:loginReducer
   }
 })
-type RootState = ReturnType<typeof store.getState>
+export  type RootState = ReturnType<typeof store.getState>
 type AppDispatch = typeof store.dispatch
 export const useAppDispatch: () => AppDispatch = useDispatch
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector

@@ -1,8 +1,9 @@
 import React, { lazy } from 'react'
 
-import { Navigate } from 'react-router-dom'
 const Login = lazy(() => import('@/views/login/index'))
+const Layout = lazy(() => import('@/Layout/index'))
 const Home = lazy(() => import('@/views/home/index'))
+const NotFound = lazy(() => import('@/views/404/404'))
 export interface RouteConfig {
   path: string
   element: React.ReactNode
@@ -14,12 +15,20 @@ export interface RouteConfig {
 const routes: RouteConfig[] = [
   {
     path: '/',
-    element: <Navigate to="/home" />,
-    auth: true
+    element: <Layout />,
+    auth: true,
+    redirect: '/dashboard',
+    children: [
+      {
+        path: 'dashboard',
+        element: <Home />,
+        auth: true
+      }
+    ]
   },
   {
-    path: '/home',
-    element: <Home />,
+    path: '/404',
+    element: <NotFound />,
     auth: true
   },
   {

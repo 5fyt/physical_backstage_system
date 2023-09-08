@@ -13,7 +13,6 @@ const AuthRoute = ({ children, auth }: any) => {
 
   useEffect(() => {
     if (token === '' && auth) {
-      console.log('ss')
       message.error('token 过期，请重新登录!')
       navigate('/login')
     }
@@ -21,7 +20,7 @@ const AuthRoute = ({ children, auth }: any) => {
     if (token && isExist) {
       // 如果你已经登录了，但是你通过浏览器里直接访问login的话不允许直接跳转到login路由，必须通过logout来控制退出登录或者是token过期返回登录界面
       if (location.pathname == '/' || location.pathname == '/login') {
-        navigate('/home')
+        navigate('/dashboard')
       } else {
         // 如果是其他路由就跳到其他的路由
         navigate(location.pathname)
