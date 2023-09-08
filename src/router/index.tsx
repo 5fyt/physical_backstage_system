@@ -1,20 +1,31 @@
 import React, { lazy } from 'react'
-import type { RouteObject } from 'react-router-dom'
+
 import { Navigate } from 'react-router-dom'
 const Login = lazy(() => import('@/views/login/index'))
 const Home = lazy(() => import('@/views/home/index'))
-const routes: RouteObject[] = [
+export interface RouteConfig {
+  path: string
+  element: React.ReactNode
+  auth: boolean
+  children?: RouteConfig[]
+  redirect?: string
+}
+
+const routes: RouteConfig[] = [
   {
     path: '/',
-    element: <Navigate to="/home" />
+    element: <Navigate to="/home" />,
+    auth: true
   },
   {
     path: '/home',
-    element: <Home />
+    element: <Home />,
+    auth: true
   },
   {
     path: '/login',
-    element: <Login />
+    element: <Login />,
+    auth: false
   }
 ]
 export default routes
