@@ -1,7 +1,7 @@
 import React, { lazy } from 'react'
 
 const Login = lazy(() => import('@/views/login/index'))
-const Layout = lazy(() => import('@/Layout/index'))
+const LayoutContainer = lazy(() => import('@/Layout/index'))
 const Home = lazy(() => import('@/views/home/index'))
 const NotFound = lazy(() => import('@/views/404/404'))
 export interface RouteConfig {
@@ -15,7 +15,7 @@ export interface RouteConfig {
 const routes: RouteConfig[] = [
   {
     path: '/',
-    element: <Layout />,
+    element: <LayoutContainer />,
     auth: true,
     redirect: '/dashboard',
     children: [
