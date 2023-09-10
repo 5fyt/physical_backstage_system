@@ -1,6 +1,8 @@
 import axios from 'axios'
 import type { AxiosInstance } from 'axios'
 import type { requestConfig } from './type'
+import Nprogress from 'nprogress'
+import 'nprogress/nprogress.css'
 import { message } from 'antd'
 
 class HYRequest {
@@ -13,6 +15,7 @@ class HYRequest {
     //拦截器interceptor
     this.instance.interceptors.request.use(
       (config) => {
+        Nprogress.start()
         // console.log('全局请求成功拦截')
         const token = localStorage.getItem('token')
         if (token) {
@@ -27,6 +30,7 @@ class HYRequest {
     )
     this.instance.interceptors.response.use(
       (res) => {
+        Nprogress.done()
         // console.log('全局相应成功的拦截')
         if (res.status >= 200 && res.status <= 300) {
           return res.data

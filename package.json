@@ -15,6 +15,7 @@
     "@types/react-redux": "^7.1.26",
     "antd": "^5.8.6",
     "axios": "^1.5.0",
+    "hoist-non-react-statics": "^3.3.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-redux": "^8.1.2",
@@ -49,6 +50,7 @@
     ]
   },
   "devDependencies": {
+    "@types/nprogress": "^0.2.0",
     "@typescript-eslint/eslint-plugin": "^6.6.0",
     "@typescript-eslint/parser": "^6.6.0",
     "customize-cra": "^1.0.0",
@@ -57,6 +59,7 @@
     "eslint-plugin-prettier": "^5.0.0",
     "eslint-plugin-react": "^7.33.2",
     "node-sass": "^9.0.0",
+    "nprogress": "^0.2.0",
     "react-app-rewired": "^2.2.1",
     "redux-devtools": "^3.7.0"
   }

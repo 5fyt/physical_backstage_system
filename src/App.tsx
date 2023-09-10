@@ -4,6 +4,7 @@ import { Route, Routes } from 'react-router-dom'
 import routers from '@/router/index'
 import AuthRoute from '@/hook/authRouter'
 import type { RouteConfig } from '@/router/index'
+import { WithProgress } from './hook/withProgress'
 
 const App = () => {
   // 处理我们的routers
@@ -34,11 +35,11 @@ const App = () => {
   }
   return (
     <div className="app">
-      <Suspense fallback={<h2>loading...</h2>}>
+      <Suspense >
         <Routes>{RouteAuthFun(routers)}</Routes>
       </Suspense>
     </div>
   )
 }
 
-export default App
+export default WithProgress(App)
