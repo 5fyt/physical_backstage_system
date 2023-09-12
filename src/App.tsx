@@ -1,10 +1,11 @@
 import React, { Suspense } from 'react'
 import type { ReactNode } from 'react'
 import { Route, Routes } from 'react-router-dom'
+
 import routers from '@/router/index'
-import AuthRoute from '@/hook/authRouter'
-import type { RouteConfig } from '@/router/index'
-import { WithProgress } from './hook/withProgress'
+import AuthRoute from '@/router/utils/authRouter'
+import type { RouteConfig } from '@/router/interface/index'
+import { WithProgress } from './router/utils/withProgress'
 
 const App = () => {
   // 处理我们的routers
@@ -35,7 +36,7 @@ const App = () => {
   }
   return (
     <div className="app">
-      <Suspense >
+      <Suspense>
         <Routes>{RouteAuthFun(routers)}</Routes>
       </Suspense>
     </div>

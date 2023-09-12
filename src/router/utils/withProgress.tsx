@@ -15,7 +15,20 @@ export const WithProgress = <P extends object>(
 
     return <WrappedComponent {...props} />
   }
-   // 拷贝「包装组件」的静态方法到「新组件」
+  // 拷贝「包装组件」的静态方法到「新组件」
   hoistNonReactStatic(NewComponent, WrappedComponent)
   return NewComponent
+}
+
+export const connectRoute = (WrappedComponent: React.ComponentType) => {
+
+
+  const NewComponent: React.FC = (props) => {
+    // shouldComponentUpdate(nextProps) {
+    //   return nextProps.location !== this.props.location;
+    // }
+    return <WrappedComponent {...props}></WrappedComponent>
+  }
+  return NewComponent
+ 
 }

@@ -1,0 +1,60 @@
+.sider {
+  display: flex;
+  flex-direction: column;
+  width: 210px;
+}
+
+.closeBtn {
+  margin-top: 20px;
+  margin-left: 31px;
+  width: 30px;
+  z-index: 999;
+}
+.closeActive {
+  margin-top: 20px;
+  margin-left: 26px;
+  width: 30px;
+  z-index: 999;
+}
+aside::-webkit-scrollbar {
+  width: 4px;
+  // height: 10px; // 高度写不写，都不影响，因为会根据内容的长度自动计算
+}
+aside::-webkit-scrollbar  {
+  width: 4px;
+  // height: 10px; // 高度写不写，都不影响，因为会根据内容的长度自动计算
+}
+
+aside::-webkit-scrollbar-thumb {
+  background: #ccc; // 滑块颜色
+  border-radius: 2px; // 滑块圆角
+}
+
+aside::-webkit-scrollbar-thumb:hover {
+  background: #e6f4ff; // 鼠标移入滑块变红
+}
+
+:global(.ant-layout-sider) {
+  background-color: #fff !important;
+  overflow: hidden;
+
+  padding-top: 48px;
+}
+
+:global(.ant-menu-item) {
+  border-radius: 0 !important;
+}
+:global(.ant-menu-item-selected) {
+  border-right: 2px solid #1890ff;
+}
+:global(
+    :where(.css-dev-only-do-not-override-18iikkb).ant-menu-light:not(
+        .ant-menu-horizontal
+      )
+      .ant-menu-item:not(.ant-menu-item-selected):hover
+  ) {
+  background: #fafafa !important;
+}
+:global(.ant-menu-item-active:hover) {
+  color: #1677ff !important;
+}

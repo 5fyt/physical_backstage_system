@@ -1,40 +1,34 @@
 import React, { lazy } from 'react'
-
-const Login = lazy(() => import('@/views/login/index'))
-const LayoutContainer = lazy(() => import('@/Layout/index'))
-const Home = lazy(() => import('@/views/home/index'))
-const NotFound = lazy(() => import('@/views/404/404'))
-export interface RouteConfig {
-  path: string
-  element: React.ReactNode
-  auth: boolean
-  children?: RouteConfig[]
-  redirect?: string
-}
-
+import { Navigate } from 'react-router-dom'
+import lazyLoad from './utils/lazyLoad'
+import { RouteConfig } from './interface'
+import BusinessRouter from './modules/business'
+import PhysicalRouter from './modules/physical'
+const RoutesArray = [BusinessRouter, PhysicalRouter]
 const routes: RouteConfig[] = [
   {
     path: '/',
-    element: <LayoutContainer />,
+    element: lazyLoad(lazy(() => import('@/Layout/index'))),
     auth: true,
     redirect: '/dashboard',
     children: [
       {
         path: 'dashboard',
-        element: <Home />,
+        element: lazyLoad(lazy(() => import('@/views/home/index'))),
         auth: true
       }
     ]
   },
   {
-    path: '/404',
-    element: <NotFound />,
-    auth: true
-  },
-  {
     path: '/login',
-    element: <Login />,
+    element: lazyLoad(lazy(() => import('@/views/login/index'))),
     auth: false
+  },
+  ...RoutesArray,
+  {
+    path: '*',
+    element: lazyLoad(lazy(() => import('@/views/404/404'))),
+    auth: true
   }
 ]
 export default routes

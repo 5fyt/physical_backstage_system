@@ -1,77 +1,18 @@
-.logo {
-  display: flex;
-  align-items: center;
-  height: 48px;
-  .lg {
-    width: 38px;
-    height: 38px;
-    margin-right: 10px;
-    vertical-align: middle;
-  }
-  h2 {
-    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS',
-      sans-serif;
-    margin: 0;
-    height: 48px;
-    margin-top: -10px;
-
-    a {
-      color: #fff;
-    }
-  }
-}
-.sider {
-  display: flex;
-  flex-direction: column;
-  width: 210px;
-}
-
-.closeBtn {
-  margin-top: 20px;
-  margin-left: 31px;
-  width: 30px;
-  z-index: 999;
-
-}
-.closeActive {
-  margin-top: 20px;
-  margin-left: 26px;
-  width: 30px;
-  z-index: 999;
-
-}
-aside::-webkit-scrollbar {
-  width: 4px;
-  // height: 10px; // 高度写不写，都不影响，因为会根据内容的长度自动计算
-}
-aside::-webkit-scrollbar  {
-  width: 4px;
-  // height: 10px; // 高度写不写，都不影响，因为会根据内容的长度自动计算
-}
-
-aside::-webkit-scrollbar-thumb {
-  background: #ccc; // 滑块颜色
-  border-radius: 2px; // 滑块圆角
-}
-
-aside::-webkit-scrollbar-thumb:hover {
-  background: #e6f4ff; // 鼠标移入滑块变红
-}
-
-:global(.ant-layout-sider) {
-  background-color: #fff !important;
-  overflow: hidden;
-
-  padding-top: 48px;
-}
-
-:global(.ant-menu-item.ant-menu-item-only-child) {
-  border-radius: 0 !important;
-}
-:global(.ant-menu-item-selected) {
-  border-right: 2px solid #1890ff;
-}
-:global(.ant-menu-item-active:hover) {
-  background-color: #fafafa !important;
-  color: #1677ff !important;
+.container {
+	display: flex;
+	min-width: 950px;
+	height: 100%;
+	.ant-layout-sider {
+		box-sizing: border-box;
+	}
+	.ant-layout {
+		/* 防止 tabs 超出不收缩 */
+		overflow-x: hidden;
+		.ant-layout-content {
+			box-sizing: border-box;
+			flex: 1;
+			padding: 10px 12px;
+			overflow-x: hidden;
+		}
+	}
 }
