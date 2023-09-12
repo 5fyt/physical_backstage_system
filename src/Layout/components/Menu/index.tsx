@@ -64,6 +64,7 @@ const items: MenuItem[] = [
 
 const SiderLeft: React.FC = () => {
   const { pathname } = useLocation()
+  const path = pathname.split('/')
   const navigate = useNavigate()
   const {
     token: { colorBgContainer }
@@ -73,29 +74,47 @@ const SiderLeft: React.FC = () => {
   const [activeMenu, setActiveMenu] = useState<string[]>([])
   const openKey = JSON.parse(localStorage.getItem('openKeys') as string)
   const [openKeys, setOpenKeys] = useState<string[]>(openKey ? openKey : [])
-
   //当手动输入路由路由表发生变化时，将路由对应的sub展开，其他的隐藏
+
   useEffect(() => {
-    const path = pathname.split('/')
-    if (path.length > 2) {
-      localStorage.setItem('openKeys', JSON.stringify([path[1]]))
-      setOpenKeys([path[1]])
-    } else  {
-      setOpenKeys(['physical'])
-      localStorage.setItem('openKeys', JSON.stringify(['physical']))
+    // 直接监听路由变化
+    if (pathname.split('/').length > 2) {
+      const timer = setTimeout(() => {
+        localStorage.setItem('Keys', JSON.stringify([pathname.split('/')[1]]))
+        setOpenKeys((prev) => {
+          return [pathname.split('/')[1]]
+        })
+        setActiveMenu([pathname])
+      }, 100)
+      return () => clearTimeout(timer)
+      // localStorage.setItem('Keys', JSON.stringify([pathname.split('/')[1]]))
+      // setOpenKeys((prev) => {
+      //   return [...prev, pathname.split('/')[1]]
+      // })
+    } else {
+      console.log('执行了')
+      const timer = setTimeout(() => {
+        localStorage.setItem('Keys', JSON.stringify(['physical']))
+        setOpenKeys(['physical'])
+        setActiveMenu([pathname])
+      }, 100)
+      return () => clearTimeout(timer)
+      // localStorage.setItem('Keys', JSON.stringify(['physical']))
+      // setOpenKeys((prev) => {
+      //   return ['physical']
+      // })
     }
-    setActiveMenu([pathname])
   }, [pathname])
   //切换收缩按钮时，需要将原来的菜单面板展开
-  useEffect(()=>{
-    if(!collapsedApp){
-      setOpenKeys(['physical'])
-      localStorage.setItem('openKeys', JSON.stringify(['physical']))
+  useEffect(() => {
+    if (!collapsedApp) {
+      setOpenKeys(openKey)
     }
-  },[collapsedApp])
+  }, [collapsedApp])
   //当点击SubItem时需要展开菜单，如果点击第二个subItem需要同时展开两个，如果在点击MenuItem，就需要将上一个SubItems收缩
   const onOpenChange: MenuProps['onOpenChange'] = (openKeys) => {
     //获取点击的subKey
+    console.log(openKeys)
     if (openKeys.length === 0 || openKeys.length === 1) {
       localStorage.setItem('openKeys', JSON.stringify(openKeys))
       setOpenKeys(openKeys)
@@ -111,11 +130,13 @@ const SiderLeft: React.FC = () => {
       const splitKey = key.split('/')
       if (splitKey.length > 2) {
         const openKey = JSON.parse(localStorage.getItem('openKeys') as string)
-        const latestOpenKey = openKey[openKey.length - 1]
-        if (latestOpenKey.includes(splitKey[1])) {
+        const flag = openKey.some((item: string) => item === splitKey[1])
+        if (flag) {
           localStorage.setItem('openKeys', JSON.stringify([splitKey[1]]))
-          setOpenKeys([openKey[1]])
+          setOpenKeys([splitKey[1]])
         }
+      } else {
+        localStorage.setItem('openKeys', JSON.stringify(['physical']))
       }
     }
     navigate(key)
@@ -140,7 +161,6 @@ const SiderLeft: React.FC = () => {
       >
         <Menu
           mode="inline"
-          defaultOpenKeys={['physical']}
           onOpenChange={onOpenChange}
           openKeys={openKeys}
           selectedKeys={activeMenu}
@@ -149,7 +169,11 @@ const SiderLeft: React.FC = () => {
         />
         <div
           className={collapsedApp ? Style.closeBtn : Style.closeActive}
-          onClick={() => dispatch(updateCollapsed(!collapsedApp))}
+          onClick={() =>
+            dispatch(
+              updateCollapsed({ collapsedApp: !collapsedApp, path: pathname })
+            )
+          }
         >
           {collapsedApp ? (
             <MenuUnfoldOutlined style={{ fontSize: '16px' }} />

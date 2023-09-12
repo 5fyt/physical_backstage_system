@@ -12,7 +12,14 @@ const menuReducer = createSlice({
   reducers: {
     updateCollapsed: (state, action) => {
       const data = action.payload
-      state.collapsed = data
+      const pathname = data.path
+      const patharr = pathname.split('/')
+      state.collapsed = data.collapsedApp
+      if (patharr.length > 2) {
+        localStorage.setItem('openKeys', JSON.stringify([patharr[1]]))
+      } else {
+        localStorage.setItem('openKeys', JSON.stringify(['physical']))
+      }
     }
   }
 })
