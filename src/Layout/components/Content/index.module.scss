@@ -1,0 +1,10 @@
+.Breadcrumb{
+  margin: 15px;
+}
+:global(.ant-breadcrumb-link a){
+  color: #000;
+}
+:global(.ant-breadcrumb-link a:hover){
+  color: #1890ff;
+  background-color: #fff;
+}
