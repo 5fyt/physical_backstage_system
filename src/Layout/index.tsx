@@ -1,4 +1,4 @@
-import React, { memo, useState } from 'react'
+import React, { memo, useState, ReactNode } from 'react'
 
 import SiderLeft from './components/Menu'
 import HeaderNav from './components/Header/index'
@@ -8,11 +8,13 @@ import { Layout } from 'antd'
 import { useAppSelector } from '@/stores'
 import { collapse } from '@/stores/module/menu'
 import style from './index.module.scss'
+
 const LayContainer: React.FC = () => {
   const collapsedApp = useAppSelector(collapse)
+
   return (
     <>
-      <Layout >
+      <Layout>
         <HeaderNav></HeaderNav>
         <Layout hasSider>
           <SiderLeft></SiderLeft>

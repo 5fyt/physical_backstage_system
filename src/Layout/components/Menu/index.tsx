@@ -80,12 +80,19 @@ const SiderLeft: React.FC = () => {
     if (path.length > 2) {
       localStorage.setItem('openKeys', JSON.stringify([path[1]]))
       setOpenKeys([path[1]])
-    } else {
-      setOpenKeys([])
-      localStorage.setItem('openKeys', JSON.stringify([]))
+    } else  {
+      setOpenKeys(['physical'])
+      localStorage.setItem('openKeys', JSON.stringify(['physical']))
     }
     setActiveMenu([pathname])
   }, [pathname])
+  //切换收缩按钮时，需要将原来的菜单面板展开
+  useEffect(()=>{
+    if(!collapsedApp){
+      setOpenKeys(['physical'])
+      localStorage.setItem('openKeys', JSON.stringify(['physical']))
+    }
+  },[collapsedApp])
   //当点击SubItem时需要展开菜单，如果点击第二个subItem需要同时展开两个，如果在点击MenuItem，就需要将上一个SubItems收缩
   const onOpenChange: MenuProps['onOpenChange'] = (openKeys) => {
     //获取点击的subKey
@@ -133,6 +140,7 @@ const SiderLeft: React.FC = () => {
       >
         <Menu
           mode="inline"
+          defaultOpenKeys={['physical']}
           onOpenChange={onOpenChange}
           openKeys={openKeys}
           selectedKeys={activeMenu}
