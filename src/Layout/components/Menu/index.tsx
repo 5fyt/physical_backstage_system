@@ -1,28 +1,18 @@
 import React, { useEffect, useState } from 'react'
 import {
-  AppstoreOutlined,
-  MailOutlined,
-  SettingOutlined,
-  InboxOutlined,
-  GoldOutlined,
-  FunnelPlotOutlined,
-  FileOutlined,
-  CheckOutlined,
-  ReadOutlined,
-  RadiusSettingOutlined,
-  HourglassOutlined,
-  FileProtectOutlined,
-  InteractionOutlined,
-  DashboardOutlined,
+
   MenuFoldOutlined,
   MenuUnfoldOutlined
 } from '@ant-design/icons'
+import * as Icons from '@ant-design/icons'
 import type { MenuProps } from 'antd'
 import { Menu, Layout, theme } from 'antd'
 import Style from './index.module.scss'
 import { useAppDispatch, useAppSelector } from '@/stores'
 import { collapse, updateCollapsed } from '@/stores/module/menu'
 import { useLocation, useNavigate, useMatch } from 'react-router-dom'
+import { MenuOption } from '../../constant/index'
+import menuList from '../../constant/index'
 type MenuItem = Required<MenuProps>['items'][number]
 
 const { Sider } = Layout
@@ -42,33 +32,36 @@ function getItem(
   } as MenuItem
 }
 
-const items: MenuItem[] = [
-  getItem('首页', '/dashboard', <DashboardOutlined />),
-  getItem('业务管理', 'business', <MailOutlined />, [
-    getItem('体检套餐', '/business/goods', <InboxOutlined />),
-    getItem('促销规则', '/business/rules', <InteractionOutlined />),
-    getItem('客户档案', '/business/customer', <FileProtectOutlined />),
-    getItem('订单管理', '/business/order', <FunnelPlotOutlined />)
-  ]),
-  getItem('体检管理', 'physical', <AppstoreOutlined />, [
-    getItem('体检预约', '/physical/reserve', <HourglassOutlined />),
-    getItem('体检签到', '/physical/checkIn', <CheckOutlined />),
-    getItem('预约设置', '/physical/settings', <RadiusSettingOutlined />),
-    getItem('医生检查', '/physical/examine', <ReadOutlined />),
-    getItem('检查报告', '/physical/report', <FileOutlined />)
-  ]),
-  getItem('系统设置', 'settings', <SettingOutlined />, [
-    getItem('人员限流', '/seetings/limiting', <GoldOutlined />)
-  ])
-]
-
+const customIcons: { [key: string]: any } = Icons
+const addIcon = (name: string) => {
+  return React.createElement(customIcons[name])
+}
+// 处理后台返回菜单 key 值为 antd 菜单需要的 key 值
+const deepLoopFloat = (menuList: MenuOption[], newArr: MenuItem[] = []) => {
+  menuList.forEach((item: MenuOption) => {
+    // 下面判断代码解释 *** !item?.children?.length   ==>   (!item.children || item.children.length === 0)
+    if (!item?.children?.length) {
+      return newArr.push(getItem(item.title, item.path, addIcon(item.icon!)))
+    } else {
+      newArr.push(
+        getItem(
+          item.title,
+          item.path,
+          addIcon(item.icon!),
+          deepLoopFloat(item.children)
+        )
+      )
+    }
+  })
+  return newArr
+}
+const items: MenuItem[] =deepLoopFloat(menuList)
 const SiderLeft: React.FC = () => {
-  const { pathname } = useLocation()
-  const path = pathname.split('/')
-  const navigate = useNavigate()
   const {
     token: { colorBgContainer }
   } = theme.useToken()
+  const { pathname } = useLocation()
+  const navigate = useNavigate()
   const dispatch = useAppDispatch()
   const collapsedApp = useAppSelector(collapse)
   const [activeMenu, setActiveMenu] = useState<string[]>([])
@@ -81,28 +74,17 @@ const SiderLeft: React.FC = () => {
     if (pathname.split('/').length > 2) {
       const timer = setTimeout(() => {
         localStorage.setItem('Keys', JSON.stringify([pathname.split('/')[1]]))
-        setOpenKeys((prev) => {
-          return [pathname.split('/')[1]]
-        })
+        setOpenKeys((prev) => [pathname.split('/')[1]])
         setActiveMenu([pathname])
       }, 100)
       return () => clearTimeout(timer)
-      // localStorage.setItem('Keys', JSON.stringify([pathname.split('/')[1]]))
-      // setOpenKeys((prev) => {
-      //   return [...prev, pathname.split('/')[1]]
-      // })
     } else {
-      console.log('执行了')
       const timer = setTimeout(() => {
         localStorage.setItem('Keys', JSON.stringify(['physical']))
         setOpenKeys(['physical'])
         setActiveMenu([pathname])
       }, 100)
       return () => clearTimeout(timer)
-      // localStorage.setItem('Keys', JSON.stringify(['physical']))
-      // setOpenKeys((prev) => {
-      //   return ['physical']
-      // })
     }
   }, [pathname])
   //切换收缩按钮时，需要将原来的菜单面板展开
@@ -114,7 +96,7 @@ const SiderLeft: React.FC = () => {
   //当点击SubItem时需要展开菜单，如果点击第二个subItem需要同时展开两个，如果在点击MenuItem，就需要将上一个SubItems收缩
   const onOpenChange: MenuProps['onOpenChange'] = (openKeys) => {
     //获取点击的subKey
-    console.log(openKeys)
+
     if (openKeys.length === 0 || openKeys.length === 1) {
       localStorage.setItem('openKeys', JSON.stringify(openKeys))
       setOpenKeys(openKeys)
@@ -126,7 +108,7 @@ const SiderLeft: React.FC = () => {
   const toPage = ({ key }: { key: string }) => {
     if (key) {
       //分割路由 /business/goods ['','business','goods'],
-      //如果当前路由和subItem key匹配就将openKey赋值为当前路由对应的sub,其他的隐藏
+      //如果当前路由和subItem key匹配就将openKey赋值为当前路由对应的sub,其他的隐藏,如果跳转页面为首页默认展开体检管理
       const splitKey = key.split('/')
       if (splitKey.length > 2) {
         const openKey = JSON.parse(localStorage.getItem('openKeys') as string)
