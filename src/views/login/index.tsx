@@ -72,6 +72,9 @@ const Login: React.FC = () => {
   return (
     <>
       {contextHolder}
+      {LoginState === 'error' && (
+        <LoginMessage content={'错误的用户名和密码'} />
+      )}
       <div className={Styles.page}>
         <div className={Styles.container}>
           <div className={Styles.left}>
@@ -90,9 +93,6 @@ const Login: React.FC = () => {
                 await submitHandle(value as FormParams)
               }}
             >
-              {LoginState === 'error' && (
-                <LoginMessage content={'错误的用户名和密码'} />
-              )}
               {
                 <>
                   <ProFormText

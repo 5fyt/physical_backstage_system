@@ -1,44 +1,85 @@
-import React, { memo, useState } from 'react'
+import React, { memo, useRef, useState } from 'react'
 import {
   SearchOutlined,
   QuestionCircleOutlined,
   BellOutlined,
-  UserOutlined
+  UserOutlined,
+  EditOutlined,
+  CloudUploadOutlined,
+  LogoutOutlined,
+  ExclamationCircleOutlined
 } from '@ant-design/icons'
-import { Layout, Input, Badge, Space, Avatar, Dropdown } from 'antd'
+import {
+  Layout,
+  Input,
+  Badge,
+  Space,
+  Avatar,
+  Dropdown,
+  message,
+  Modal
+} from 'antd'
 import type { MenuProps } from 'antd'
 import Style from './index.module.scss'
 import logo from '@/assets/front/index/logo (2).png'
-import { useAppSelector } from '@/stores'
-import { photo, Name } from '@/stores/module/login'
+import { useAppDispatch, useAppSelector } from '@/stores'
+import { photo, Name, logoutOp } from '@/stores/module/login'
+import UpdatePassword from './components/UpdatePassword'
 const style = { color: '#fff', fontSize: '16px' }
 const { Header } = Layout
-const onClick: MenuProps['onClick'] = ({ key }) => {
-  console.log(key)
-}
 
-const items: MenuProps['items'] = [
-  {
-    label: '修改密码',
-    key: '1'
-  },
-  {
-    label: '上传头像',
-    key: '2'
-  },
-  { type: 'divider' },
-  {
-    label: '退出登入',
-    key: '3'
-  }
-]
+interface ModalProps {
+  showModal: () => void
+}
 const HeaderNav: React.FC = () => {
+  const dispatch = useAppDispatch()
+  const pswRef = useRef<ModalProps>(null)
+  const loadRef = useRef<ModalProps>(null)
+  const [messageApi, contextHolder] = message.useMessage()
   const [showInput, setShowInput] = useState(false)
   const avatar = useAppSelector(photo)
   const username = useAppSelector(Name)
-
+  
+  const items: MenuProps['items'] = [
+    {
+      label: '修改密码',
+      icon: <EditOutlined />,
+      key: '1',
+      onClick:() => pswRef.current?.showModal()
+    },
+    {
+      label: '上传头像',
+      icon: <CloudUploadOutlined />,
+      key: '2'
+    },
+    { type: 'divider' },
+    {
+      label: '退出登入',
+      icon: <LogoutOutlined />,
+      key: '3',
+      onClick: () => logout()
+    }
+  ]
+  const logout = async () => {
+    try {
+      Modal.confirm({
+        title: '温馨提示 🧡',
+        icon: <ExclamationCircleOutlined />,
+        content: '是否确认退出登录？',
+        okText: '确认',
+        cancelText: '取消',
+        onOk: async () => {
+          await dispatch(logoutOp)
+          messageApi.success('退出登入')
+        }
+      })
+    } catch (err) {
+      console.error(err)
+    }
+  }
   return (
     <>
+      {contextHolder}
       <div className={Style.header}>
         <Header>
           <div className="header_left">
@@ -86,7 +127,7 @@ const HeaderNav: React.FC = () => {
                   style={{ backgroundColor: '#87d068' }}
                   icon={<UserOutlined />}
                 />
-                <Dropdown menu={{ items, onClick }} placement="bottomLeft">
+                <Dropdown menu={{ items }} placement="bottomLeft">
                   <div className="user"> {username} </div>
                 </Dropdown>
               </Space>
@@ -94,6 +135,7 @@ const HeaderNav: React.FC = () => {
           </Space>
         </Header>
       </div>
+      <UpdatePassword innerRef={pswRef}></UpdatePassword>
     </>
   )
 }

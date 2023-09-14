@@ -19,7 +19,7 @@ class HYRequest {
         // console.log('全局请求成功拦截')
         const token = localStorage.getItem('token')
         if (token) {
-          config.headers.Authorization = token
+          config.headers.token=token
         }
         return config
       },

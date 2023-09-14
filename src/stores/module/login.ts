@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import { loginDr, loginOp } from '@/services/api/login'
+import { loginDr, loginOp, loginOutOp } from '@/services/api/login'
 import { loginParams } from '@/services/types/login'
 import { RootState } from '..'
 
@@ -40,6 +40,13 @@ export const doctorLogin = createAsyncThunk(
     return res
   }
 )
+export const logoutOp = createAsyncThunk('logoutO', async () => {
+  await loginOutOp()
+  localStorage.removeItem('token')
+  localStorage.removeItem('openKeys')
+  localStorage.removeItem('photo')
+  localStorage.removeItem('name')
+})
 const loginReducer = createSlice({
   name: 'loginStore',
   initialState,

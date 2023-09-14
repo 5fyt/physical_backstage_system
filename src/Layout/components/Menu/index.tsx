@@ -6,7 +6,7 @@ import { Menu, Layout, theme } from 'antd'
 import Style from './index.module.scss'
 import { useAppDispatch, useAppSelector } from '@/stores'
 import { collapse, updateCollapsed } from '@/stores/module/menu'
-import { useLocation, useNavigate, useMatch } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { MenuOption } from '../../constant/index'
 import menuList from '../../constant/index'
 type MenuItem = Required<MenuProps>['items'][number]
