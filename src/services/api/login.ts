@@ -1,6 +1,6 @@
 import hyRequest from '..'
 
-import type { loginParams ,passwordParams} from '../types/login'
+import type { loginParams, passwordParams, photoParams } from '../types/login'
 export const loginOp = (data: loginParams) => {
   return hyRequest.post({
     url: '/admin/login',
@@ -24,9 +24,15 @@ export const loginOutOp = () => {
     url: '/admin/logout'
   })
 }
-export const updatePassword=(data:passwordParams)=>{
+export const updatePassword = (data: passwordParams) => {
   return hyRequest.post({
-    url:'/admin/change-password',
+    url: '/admin/change-password',
+    data
+  })
+}
+export const updatePhoto = (data: photoParams) => {
+  return hyRequest.post({
+    url: '/admin/change-photo',
     data
   })
 }

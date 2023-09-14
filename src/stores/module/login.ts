@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import { loginDr, loginOp, loginOutOp } from '@/services/api/login'
-import { loginParams } from '@/services/types/login'
+import { loginDr, loginOp, loginOutOp, updatePhoto } from '@/services/api/login'
+import { loginParams, photoParams } from '@/services/types/login'
 import { RootState } from '..'
 
 type stateType = {
@@ -40,13 +40,28 @@ export const doctorLogin = createAsyncThunk(
     return res
   }
 )
+/**
+ * 退出登入
+ */
 export const logoutOp = createAsyncThunk('logoutO', async () => {
-  await loginOutOp()
+  const { data } = await loginOutOp()
   localStorage.removeItem('token')
   localStorage.removeItem('openKeys')
   localStorage.removeItem('photo')
   localStorage.removeItem('name')
+  return data
 })
+/**
+ * 修改头像
+ */
+export const updateAavatar = createAsyncThunk(
+  'avartar',
+  async (data: photoParams) => {
+    const res = await updatePhoto(data)
+    localStorage.setItem('photo', res.data)
+    return res
+  }
+)
 const loginReducer = createSlice({
   name: 'loginStore',
   initialState,
@@ -64,6 +79,10 @@ const loginReducer = createSlice({
         state.photo = payload.data.photo
         state.name = payload.data.name
         state.token = payload.data.token
+      })
+      .addCase(logoutOp.fulfilled, () => {})
+      .addCase(updateAavatar.fulfilled, (state, { payload }) => {
+        state.photo = payload.data
       })
   }
 })

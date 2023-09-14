@@ -12,3 +12,6 @@ export type passwordParams={
   oldPassword:string
   newPassword:string
 }
+export type photoParams={
+  path:string
+}

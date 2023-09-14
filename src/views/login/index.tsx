@@ -37,7 +37,6 @@ const Login: React.FC = () => {
   const navigate = useNavigate()
   const [LoginState, setLoginState] = useState('')
   const submitHandle = async (value: FormParams) => {
-    console.log(value)
     try {
       const { type, ...otherValue } = value
       type && type === 'doctor'
@@ -53,7 +52,7 @@ const Login: React.FC = () => {
           .open({
             type: 'loading',
             content: '正在登入',
-            duration: 0.5
+            duration: 1
           })
           .then(() => messageApi.success(defaultLoginSuccessMessage, 1))
           .then(() => {

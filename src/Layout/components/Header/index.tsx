@@ -25,6 +25,8 @@ import logo from '@/assets/front/index/logo (2).png'
 import { useAppDispatch, useAppSelector } from '@/stores'
 import { photo, Name, logoutOp } from '@/stores/module/login'
 import UpdatePassword from './components/UpdatePassword'
+import LoadAvatar from './components/LoadAvatar'
+import { useNavigate } from 'react-router-dom'
 const style = { color: '#fff', fontSize: '16px' }
 const { Header } = Layout
 
@@ -35,22 +37,24 @@ const HeaderNav: React.FC = () => {
   const dispatch = useAppDispatch()
   const pswRef = useRef<ModalProps>(null)
   const loadRef = useRef<ModalProps>(null)
+  const navigate = useNavigate()
   const [messageApi, contextHolder] = message.useMessage()
   const [showInput, setShowInput] = useState(false)
   const avatar = useAppSelector(photo)
   const username = useAppSelector(Name)
-  
+
   const items: MenuProps['items'] = [
     {
       label: '修改密码',
       icon: <EditOutlined />,
       key: '1',
-      onClick:() => pswRef.current?.showModal()
+      onClick: () => pswRef.current?.showModal()
     },
     {
       label: '上传头像',
       icon: <CloudUploadOutlined />,
-      key: '2'
+      key: '2',
+      onClick: () => loadRef.current?.showModal()
     },
     { type: 'divider' },
     {
@@ -60,7 +64,7 @@ const HeaderNav: React.FC = () => {
       onClick: () => logout()
     }
   ]
-  const logout = async () => {
+  const logout = () => {
     try {
       Modal.confirm({
         title: '温馨提示 🧡',
@@ -69,7 +73,8 @@ const HeaderNav: React.FC = () => {
         okText: '确认',
         cancelText: '取消',
         onOk: async () => {
-          await dispatch(logoutOp)
+          await dispatch(logoutOp())
+          navigate('/login')
           messageApi.success('退出登入')
         }
       })
@@ -121,12 +126,7 @@ const HeaderNav: React.FC = () => {
             </div>
             <div className="photo">
               <Space size={10}>
-                <Avatar
-                  size={26}
-                  src={avatar}
-                  style={{ backgroundColor: '#87d068' }}
-                  icon={<UserOutlined />}
-                />
+                <Avatar size={26} src={avatar} />
                 <Dropdown menu={{ items }} placement="bottomLeft">
                   <div className="user"> {username} </div>
                 </Dropdown>
@@ -136,6 +136,7 @@ const HeaderNav: React.FC = () => {
         </Header>
       </div>
       <UpdatePassword innerRef={pswRef}></UpdatePassword>
+      <LoadAvatar innerRef={loadRef}></LoadAvatar>
     </>
   )
 }
