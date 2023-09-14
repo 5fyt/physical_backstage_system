@@ -1,9 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import {
-
-  MenuFoldOutlined,
-  MenuUnfoldOutlined
-} from '@ant-design/icons'
+import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons'
 import * as Icons from '@ant-design/icons'
 import type { MenuProps } from 'antd'
 import { Menu, Layout, theme } from 'antd'
@@ -55,7 +51,7 @@ const deepLoopFloat = (menuList: MenuOption[], newArr: MenuItem[] = []) => {
   })
   return newArr
 }
-const items: MenuItem[] =deepLoopFloat(menuList)
+const items: MenuItem[] = deepLoopFloat(menuList)
 const SiderLeft: React.FC = () => {
   const {
     token: { colorBgContainer }
@@ -65,23 +61,28 @@ const SiderLeft: React.FC = () => {
   const dispatch = useAppDispatch()
   const collapsedApp = useAppSelector(collapse)
   const [activeMenu, setActiveMenu] = useState<string[]>([])
+  //用本地存储管理主要是因为收缩菜单栏需要
   const openKey = JSON.parse(localStorage.getItem('openKeys') as string)
   const [openKeys, setOpenKeys] = useState<string[]>(openKey ? openKey : [])
+
   //当手动输入路由路由表发生变化时，将路由对应的sub展开，其他的隐藏
 
   useEffect(() => {
     // 直接监听路由变化
     if (pathname.split('/').length > 2) {
       const timer = setTimeout(() => {
-        localStorage.setItem('Keys', JSON.stringify([pathname.split('/')[1]]))
+        localStorage.setItem(
+          'openKeys',
+          JSON.stringify([pathname.split('/')[1]])
+        )
         setOpenKeys((prev) => [pathname.split('/')[1]])
         setActiveMenu([pathname])
       }, 100)
       return () => clearTimeout(timer)
     } else {
       const timer = setTimeout(() => {
-        const item=menuList.find((item,index)=>index===1)
-        console.log(item)
+        const item = menuList.find((item, index) => index === 1)
+
         localStorage.setItem('openKeys', JSON.stringify([item?.path]))
         setOpenKeys([item?.path as string])
         setActiveMenu([pathname])
@@ -120,7 +121,7 @@ const SiderLeft: React.FC = () => {
           setOpenKeys([splitKey[1]])
         }
       } else {
-        const item=menuList.find((item,index)=>index===1)
+        const item = menuList.find((item, index) => index === 1)
         localStorage.setItem('openKeys', JSON.stringify([item?.path]))
         setOpenKeys([item?.path as string])
       }

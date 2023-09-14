@@ -12,8 +12,8 @@ type stateType = {
 const initialState: stateType = {
   code: 0,
   token: localStorage.getItem('token') || '',
-  photo: '',
-  name: ''
+  photo: localStorage.getItem('photo') || '',
+  name: localStorage.getItem('name') || ''
 }
 
 /**
@@ -61,4 +61,6 @@ const loginReducer = createSlice({
   }
 })
 export const selectLogin = (state: RootState) => state.login.code
+export const photo = (state: RootState) => state.login.photo
+export const Name = (state: RootState) => state.login.name
 export default loginReducer.reducer

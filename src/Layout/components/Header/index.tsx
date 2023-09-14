@@ -9,6 +9,8 @@ import { Layout, Input, Badge, Space, Avatar, Dropdown } from 'antd'
 import type { MenuProps } from 'antd'
 import Style from './index.module.scss'
 import logo from '@/assets/front/index/logo (2).png'
+import { useAppSelector } from '@/stores'
+import { photo, Name } from '@/stores/module/login'
 const style = { color: '#fff', fontSize: '16px' }
 const { Header } = Layout
 const onClick: MenuProps['onClick'] = ({ key }) => {
@@ -32,6 +34,9 @@ const items: MenuProps['items'] = [
 ]
 const HeaderNav: React.FC = () => {
   const [showInput, setShowInput] = useState(false)
+  const avatar = useAppSelector(photo)
+  const username = useAppSelector(Name)
+
   return (
     <>
       <div className={Style.header}>
@@ -77,11 +82,12 @@ const HeaderNav: React.FC = () => {
               <Space size={10}>
                 <Avatar
                   size={26}
+                  src={avatar}
                   style={{ backgroundColor: '#87d068' }}
                   icon={<UserOutlined />}
                 />
                 <Dropdown menu={{ items, onClick }} placement="bottomLeft">
-                  <div className="user">username</div>
+                  <div className="user"> {username} </div>
                 </Dropdown>
               </Space>
             </div>
