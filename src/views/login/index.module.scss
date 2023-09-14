@@ -24,11 +24,13 @@
       display: block;
       width: 85%;
       margin-bottom: 50px;
+      padding-top: 10px;
     }
     .big {
       display: block;
       width: 85%;
       height: auto;
+      padding-top: 22px;
     }
   }
   .right {
@@ -68,4 +70,10 @@
 :global(.ant-pro-form-login-container) {
   height: auto !important;
   padding: 0;
+}
+:global(.ant-pro-form-login-desc) {
+  margin-block-end: 20px;
+}
+:global(.login_title_container__-T682){
+  margin-bottom: 20px !important;
 }

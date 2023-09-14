@@ -1,24 +1,42 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import { login } from '@/services/api/login'
+import { loginDr, loginOp } from '@/services/api/login'
 import { loginParams } from '@/services/types/login'
 import { RootState } from '..'
 
 type stateType = {
   code: number
   token: string
-  permissions: string[]
+  photo: string
+  name: string
 }
 const initialState: stateType = {
   code: 0,
   token: localStorage.getItem('token') || '',
-  permissions: []
+  photo: '',
+  name: ''
 }
-export const loginAsync = createAsyncThunk(
-  'login',
+
+/**
+ * 医生端用户登入异步
+ */
+export const operationLogin = createAsyncThunk(
+  'loginO',
   async (data: loginParams) => {
-    const res = await login(data)
-    localStorage.setItem('token', res.token)
-    localStorage.setItem('permissions', JSON.stringify(res.permissions))
+    const res = await loginDr(data)
+    localStorage.setItem('token', res.data.token)
+    return res
+  }
+)
+/**
+ * 运行端用户登入
+ */
+export const doctorLogin = createAsyncThunk(
+  'loginD',
+  async (data: loginParams) => {
+    const res = await loginOp(data)
+    localStorage.setItem('token', res.data.token)
+    localStorage.setItem('name', res.data.name)
+    localStorage.setItem('photo', res.data.photo)
     return res
   }
 )
@@ -27,12 +45,20 @@ const loginReducer = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(loginAsync.fulfilled, (state, { payload }) => {
-      state.token = payload.token
-      state.permissions = payload.permissions
-      state.code = payload.code
-    })
+    builder
+      .addCase(operationLogin.fulfilled, (state, { payload }) => {
+        state.token = payload.data.token
+        state.photo = payload.data.photo
+        state.name = payload.data.name
+        state.code = payload.code
+      })
+      .addCase(doctorLogin.fulfilled, (state, { payload }) => {
+        state.code = payload.code
+        state.photo = payload.data.photo
+        state.name = payload.data.name
+        state.token = payload.data.token
+      })
   }
 })
-export const selectLogin = (state:RootState) => state.login.code
+export const selectLogin = (state: RootState) => state.login.code
 export default loginReducer.reducer

@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { RootState } from '..'
+import menuList from '@/Layout/constant'
 type stateType = {
   collapsed: boolean
 }
@@ -18,7 +19,8 @@ const menuReducer = createSlice({
       if (patharr.length > 2) {
         localStorage.setItem('openKeys', JSON.stringify([patharr[1]]))
       } else {
-        localStorage.setItem('openKeys', JSON.stringify(['physical']))
+        const item=menuList.find((item,index)=>index===1)
+        localStorage.setItem('openKeys', JSON.stringify([item?.path]))
       }
     }
   }

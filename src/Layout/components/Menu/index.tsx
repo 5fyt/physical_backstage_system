@@ -80,8 +80,10 @@ const SiderLeft: React.FC = () => {
       return () => clearTimeout(timer)
     } else {
       const timer = setTimeout(() => {
-        localStorage.setItem('Keys', JSON.stringify(['physical']))
-        setOpenKeys(['physical'])
+        const item=menuList.find((item,index)=>index===1)
+        console.log(item)
+        localStorage.setItem('openKeys', JSON.stringify([item?.path]))
+        setOpenKeys([item?.path as string])
         setActiveMenu([pathname])
       }, 100)
       return () => clearTimeout(timer)
@@ -118,7 +120,9 @@ const SiderLeft: React.FC = () => {
           setOpenKeys([splitKey[1]])
         }
       } else {
-        localStorage.setItem('openKeys', JSON.stringify(['physical']))
+        const item=menuList.find((item,index)=>index===1)
+        localStorage.setItem('openKeys', JSON.stringify([item?.path]))
+        setOpenKeys([item?.path as string])
       }
     }
     navigate(key)

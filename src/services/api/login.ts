@@ -1,9 +1,15 @@
 import hyRequest from '..'
 
 import type { loginParams } from '../types/login'
-export const login = (data: loginParams) => {
+export const loginOp = (data: loginParams) => {
   return hyRequest.post({
-    url: '/user/login',
+    url: '/admin/login',
+    data
+  })
+}
+export const loginDr = (data: loginParams) => {
+  return hyRequest.post({
+    url: '/admin/login',
     data
   })
 }

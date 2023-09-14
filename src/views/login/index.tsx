@@ -1,12 +1,16 @@
 import React, { memo, useEffect, useRef, useState } from 'react'
 import Styles from './index.module.scss'
 import { LockOutlined, UserOutlined } from '@ant-design/icons'
-import { LoginForm, ProFormText } from '@ant-design/pro-components'
+import {
+  LoginForm,
+  ProFormText,
+  ProFormRadio
+} from '@ant-design/pro-components'
 import logo from '@/assets/login/logo.png'
 import bigLogo from '@/assets/login/big.png'
-import { loginParams } from '@/services/types/login'
+import { loginParams, FormParams } from '@/services/types/login'
 
-import { loginAsync, selectLogin } from '@/stores/module/login'
+import { operationLogin, selectLogin, doctorLogin } from '@/stores/module/login'
 import { message, Alert } from 'antd'
 import { useNavigate } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '@/stores'
@@ -32,10 +36,18 @@ const Login: React.FC = () => {
   }, [code])
   const navigate = useNavigate()
   const [LoginState, setLoginState] = useState('')
-  const submitHandle = async (value: loginParams) => {
+  const submitHandle = async (value: FormParams) => {
+    console.log(value)
     try {
-      await dispatch(loginAsync(value))
-      if (ref.current === 200) {
+      const { type, ...otherValue } = value
+      type && type === 'doctor'
+        ? localStorage.setItem('type', type)
+        : localStorage.setItem('type', 'operation')
+      type === 'operation'
+        ? await dispatch(operationLogin(otherValue))
+        : await dispatch(doctorLogin(otherValue))
+
+      if (ref?.current === 200) {
         const defaultLoginSuccessMessage = '登录成功！'
         await messageApi
           .open({
@@ -75,7 +87,7 @@ const Login: React.FC = () => {
                 </div>
               }
               onFinish={async (value: loginParams) => {
-                await submitHandle(value as loginParams)
+                await submitHandle(value as FormParams)
               }}
             >
               {LoginState === 'error' && (
@@ -116,6 +128,21 @@ const Login: React.FC = () => {
                       {
                         pattern: /^[0-9a-zA-z]{6,15}$/,
                         message: '用户名格式错误'
+                      }
+                    ]}
+                  />
+                  <ProFormRadio.Group
+                    name="type"
+                    radioType="button"
+                    fieldProps={{ value: 'operation' }}
+                    options={[
+                      {
+                        label: '医生端',
+                        value: 'doctor'
+                      },
+                      {
+                        label: '运营端',
+                        value: 'operation'
                       }
                     ]}
                   />

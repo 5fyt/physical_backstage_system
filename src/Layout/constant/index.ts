@@ -6,11 +6,24 @@ type menuItem = {
 export interface MenuOption extends menuItem {
   children?: menuItem[]
 }
-const menuList: MenuOption[] = [
+
+let menuList: MenuOption[] = [
   {
     title: '首页',
     path: '/dashboard',
     icon: 'DashboardOutlined'
+  },
+  {
+    title: '人员管理',
+    path: 'manage',
+    icon: 'DesktopOutlined',
+    children: [
+      {
+        title: '医生管理',
+        path: '/manage/user',
+        icon: 'TeamOutlined'
+      }
+    ]
   },
   {
     title: '业务管理',
@@ -84,4 +97,9 @@ const menuList: MenuOption[] = [
     ]
   }
 ]
+const type = localStorage.getItem('type')
+menuList =
+  type === 'doctor'
+    ? menuList.filter((item, index) => index === 0 || index === 2)
+    : menuList.filter((item) => item.title !== '体检管理')
 export default menuList
