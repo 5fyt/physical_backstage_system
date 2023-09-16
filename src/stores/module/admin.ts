@@ -1,8 +1,9 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { RootState } from '..'
-import { doctorParams } from '@/services/types/doctor'
-import { searchAdmin } from '@/services/api/admin'
+import { searchParams } from '@/services/types/user'
+import { searchUser } from '@/services/api/admin'
 type resultType = {
+  id:string
   name: string
   username: string
   photo: string
@@ -16,10 +17,11 @@ const initialState: stateType<resultType> = {
   totalCount: 0,
   results: []
 }
-export const searchDoctorAsync = createAsyncThunk(
+export const searchUserAsync = createAsyncThunk(
   'searchUser',
-  async (data: doctorParams) => {
-    const res = await searchAdmin(data)
+  async (data: searchParams) => {
+    const type=localStorage.getItem('type') as string
+    const res = await searchUser(data,type)
     return res
   }
 )
@@ -28,7 +30,7 @@ const adminReducer = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(searchDoctorAsync.fulfilled, (state, { payload }) => {
+    builder.addCase(searchUserAsync.fulfilled, (state, { payload }) => {
       state.totalCount = payload.data.total
       state.results = payload.data.results
     })

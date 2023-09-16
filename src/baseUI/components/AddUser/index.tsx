@@ -1,17 +1,20 @@
 import React, { memo, Ref, useImperativeHandle, useState, useRef } from 'react'
 import { Form, Input, Modal, message } from 'antd'
 import { updatePassword } from '@/services/api/login'
+import { addUser } from '@/services/api/admin'
 
 type FieldType = {
-  oldPassword: string
-  newPassword: string
-  confirmPassword: string
-}
-interface ModalProps {
-  innerRef: Ref<{ showModal: () => void }>
+  username: string
+  password: string
+  name: string
 }
 
-const UpdatePassword: React.FC<ModalProps> = (props: ModalProps) => {
+interface ModalProps {
+  innerRef: Ref<{ showModal: () => void }>
+  searchInfo: () => void
+}
+
+const AddUser: React.FC<ModalProps> = (props: ModalProps) => {
   const [visible, setVisible] = useState(false)
 
   const [messageApi, contextHolder] = message.useMessage()
@@ -23,22 +26,21 @@ const UpdatePassword: React.FC<ModalProps> = (props: ModalProps) => {
 
   const handleOk = () => {
     formRef.current?.validateFields().then((value: FieldType) => {
-    
-      const { oldPassword, newPassword, confirmPassword } = value
-      if (newPassword !== confirmPassword) {
-        messageApi.error('两次密码输入不一致请重新输入')
-      } else {
-        const type = localStorage.getItem('type') as string
-        updatePassword({ oldPassword, newPassword }, type).then((res) => {
-          if (res.code === 200) {
-            messageApi.success('修改密码成功')
-            setVisible(false)
-          } else {
-            messageApi.error('修改失败')
-          }
-        })
-      }
+      console.log(value)
+      const type = localStorage.getItem('type') as string
+      addUser({ ...value }, type).then((res) => {
+        if (res.code === 200) {
+          messageApi.success('添加成功')
+          props.searchInfo()
+          formRef.current?.resetFields()
+        } else {
+          messageApi.error('添加失败')
+        }
+      })
     })
+    setTimeout(() => {
+      setVisible(false)
+    }, 1000)
   }
   const showModal = () => {
     setVisible(true)
@@ -48,26 +50,27 @@ const UpdatePassword: React.FC<ModalProps> = (props: ModalProps) => {
     <>
       {contextHolder}
       <Modal
-        title="修改密码"
+        title="添加用户"
+        centered
         open={visible}
         onOk={handleOk}
         onCancel={() => setVisible(false)}
       >
         <Form
           name="basic"
-          labelCol={{ span: 8 }}
+          labelCol={{ span: 5 }}
           wrapperCol={{ span: 16 }}
           style={{ maxWidth: 600 }}
           ref={formRef}
           autoComplete="off"
         >
           <Form.Item<FieldType>
-            label="原密码"
-            name="oldPassword"
+            label="用户名"
+            name="username"
             rules={[
               {
                 required: true,
-                message: '请输入密码！'
+                message: '请输入用户名'
               },
               {
                 pattern: /^[0-9a-zA-z]{6,15}$/,
@@ -75,28 +78,24 @@ const UpdatePassword: React.FC<ModalProps> = (props: ModalProps) => {
               }
             ]}
           >
-            <Input.Password />
+            <Input />
           </Form.Item>
 
           <Form.Item<FieldType>
-            label="新密码"
-            name="newPassword"
+            label="姓名"
+            name="name"
             rules={[
               {
                 required: true,
-                message: '请输入密码！'
-              },
-              {
-                pattern: /^[0-9a-zA-z]{6,15}$/,
-                message: '用户名格式错误'
+                message: '请输入姓名'
               }
             ]}
           >
-            <Input.Password />
+            <Input />
           </Form.Item>
           <Form.Item<FieldType>
-            label="确定密码"
-            name="confirmPassword"
+            label="密码"
+            name="password"
             rules={[
               {
                 required: true,
@@ -115,4 +114,4 @@ const UpdatePassword: React.FC<ModalProps> = (props: ModalProps) => {
     </>
   )
 }
-export default memo(UpdatePassword)
+export default memo(AddUser)
