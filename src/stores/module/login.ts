@@ -17,7 +17,7 @@ const initialState: stateType = {
 }
 
 /**
- * 医生端用户登入异步
+ * 运行端用户登入异步
  */
 export const operationLogin = createAsyncThunk(
   'loginO',
@@ -28,7 +28,7 @@ export const operationLogin = createAsyncThunk(
   }
 )
 /**
- * 运行端用户登入
+ *  医生端用户登入异步
  */
 export const doctorLogin = createAsyncThunk(
   'loginD',

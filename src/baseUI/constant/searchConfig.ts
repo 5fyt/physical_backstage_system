@@ -5,10 +5,11 @@ export type objType = {
   label: string
   tooltip?: string
   style?: object
-  show?:boolean
+  show?: boolean
 }
 
 export interface SearchType<T> {
+  setSearchInfo: (value:any) => void
   searchConfig: {
     layout: FormLayout
     wrapperCol: object
@@ -35,8 +36,7 @@ const searchConfig: searchType<objType> = {
       label: '姓名',
       prop: 'name',
       tooltip: '这是搜索的唯一标识'
-    },
-    
+    }
   ]
 }
 export default searchConfig

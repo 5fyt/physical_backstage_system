@@ -1,14 +1,32 @@
-import React, { memo, useState } from 'react'
+import React, { memo, useRef, useState } from 'react'
 import { Form, Input, Button } from 'antd'
 import { UpOutlined, DownOutlined } from '@ant-design/icons'
 import Style from './index.module.scss'
-import { SearchType, objType } from '../../user/constant/searchConfig'
+import { SearchType, objType } from '../../constant/searchConfig'
 
-const SearchForm: React.FC<SearchType<objType>> = ({ searchConfig }) => {
+const SearchForm: React.FC<SearchType<objType>> = ({
+  setSearchInfo,
+  searchConfig
+}) => {
   const [visible, setVisible] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const formRef = useRef<any>()
+  //重置表单
+  const resetBtn = () => {
+    formRef.current?.resetFields()
+  }
+  //查询数据
+  const queryInfo = () => {
+    setLoading(true)
+    formRef.current?.validateFields().then((value: any) => {
+      setSearchInfo(value)
+      setLoading(false)
+    })
+  }
   return (
     <>
       <Form
+        ref={formRef}
         style={searchConfig.style}
         layout={searchConfig.layout}
         wrapperCol={searchConfig.wrapperCol}
@@ -17,6 +35,7 @@ const SearchForm: React.FC<SearchType<objType>> = ({ searchConfig }) => {
         <div className={Style.search}>
           {searchConfig.searchList.map((item, key) => {
             return (
+              //防止遍历时，找不到key唯一标识，但又可以做到不增加div
               <React.Fragment key={key}>
                 {!visible ? (
                   !item.show && (
@@ -48,8 +67,10 @@ const SearchForm: React.FC<SearchType<objType>> = ({ searchConfig }) => {
           })}
           <div className="input">
             <div className="btn">
-              <Button>重置</Button>
-              <Button type="primary">查询</Button>
+              <Button onClick={resetBtn}>重置</Button>
+              <Button type="primary" onClick={queryInfo} loading={loading}>
+                查询
+              </Button>
               <div className="show" onClick={() => setVisible(!visible)}>
                 {visible ? (
                   <>

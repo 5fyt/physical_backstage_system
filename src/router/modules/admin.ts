@@ -7,8 +7,8 @@ const UserRouter: RouteConfig = {
   auth: true,
   children: [
     {
-      path: 'user',
-      element: lazyLoad(lazy(() => import('@/views/manager/user'))),
+      path: 'admin',
+      element: lazyLoad(lazy(() => import('@/views/manager/admin'))),
       auth: true
     }
   ]

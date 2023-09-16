@@ -14,13 +14,13 @@ let menuList: MenuOption[] = [
     icon: 'DashboardOutlined'
   },
   {
-    title: '人员管理',
+    title: '账户管理',
     path: 'manage',
     icon: 'DesktopOutlined',
     children: [
       {
-        title: '医生管理',
-        path: '/manage/user',
+        title: '运营管理',
+        path: '/manage/admin',
         icon: 'TeamOutlined'
       }
     ]

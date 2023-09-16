@@ -1,0 +1,48 @@
+.container {
+  background-color: #fff;
+  min-height: 600px;
+  :global {
+    :where(.css-dev-only-do-not-override-18iikkb).ant-list
+      .ant-list-item
+      .ant-list-item-meta
+      .ant-list-item-meta-content {
+      flex: none;
+      min-width: 150px;
+    }
+    :where(.css-dev-only-do-not-override-18iikkb).ant-btn {
+      border-radius: 0 0;
+      border-start-end-radius: 0;
+      border-end-end-radius: 0;
+    }
+    :where(.css-dev-only-do-not-override-18iikkb).ant-input-search
+      > .ant-input-group
+      > .ant-input-group-addon:last-child
+      .ant-input-search-button {
+      border-radius: 0;
+    }
+    :where(.css-dev-only-do-not-override-18iikkb).ant-input {
+      border-radius: 0;
+      width: 230px;
+    }
+    .ant-input-group-addon {
+      margin: 0 !important;
+    }
+    .list_title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      .searchInput {
+        display: flex;
+
+        justify-content: flex-start;
+        align-items: center;
+        .btn {
+          margin-right: 10px;
+        }
+      }
+    }
+    .content {
+      display: inline-block;
+    }
+  }
+}

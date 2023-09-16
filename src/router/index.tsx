@@ -4,7 +4,7 @@ import lazyLoad from './utils/lazyLoad'
 import { RouteConfig } from './interface'
 import BusinessRouter from './modules/business'
 import PhysicalRouter from './modules/physical'
-import UserRouter from './modules/user'
+import UserRouter from './modules/admin'
 const RoutesArray = [BusinessRouter, PhysicalRouter, UserRouter]
 const routes: RouteConfig[] = [
   {
