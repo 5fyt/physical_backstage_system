@@ -31,7 +31,7 @@ const LoadAvatar: React.FC<ModalProps> = (props: ModalProps) => {
   const [visible, setVisible] = useState(false)
   const [loading, setLoading] = useState(false)
   const [imageUrl, setImageUrl] = useState<string>()
-  const dispatch=useAppDispatch()
+  const dispatch = useAppDispatch()
   const [messageApi, contextHolder] = message.useMessage()
   const [path, setPath] = useState('')
   //将子组件上的方法暴露给父组件，类型于Vue中defineExpose({})
@@ -40,15 +40,19 @@ const LoadAvatar: React.FC<ModalProps> = (props: ModalProps) => {
   }))
 
   const handleOk = async () => {
-    dispatch(updateAavatar({path})).then(()=>{
+    dispatch(updateAavatar({ path })).then(() => {
       messageApi.success('修改头像成功')
       setVisible(false)
+      setImageUrl('')
     })
   }
   const showModal = () => {
     setVisible(true)
   }
-
+  const cancel = () => {
+    setVisible(false)
+    setImageUrl('')
+  }
   const handleChange: UploadProps['onChange'] = (
     info: UploadChangeParam<UploadFile>
   ) => {
@@ -76,12 +80,7 @@ const LoadAvatar: React.FC<ModalProps> = (props: ModalProps) => {
   return (
     <>
       {contextHolder}
-      <Modal
-        title="上传头像"
-        open={visible}
-        onOk={handleOk}
-        onCancel={() => setVisible(false)}
-      >
+      <Modal title="上传头像" open={visible} onOk={handleOk} onCancel={cancel}>
         <Upload
           name="file"
           listType="picture-card"

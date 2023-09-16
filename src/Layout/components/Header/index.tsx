@@ -23,7 +23,7 @@ import type { MenuProps } from 'antd'
 import Style from './index.module.scss'
 import logo from '@/assets/front/index/logo (2).png'
 import { useAppDispatch, useAppSelector } from '@/stores'
-import { photo, Name, logoutOp } from '@/stores/module/login'
+import { photo, Name, logoOut } from '@/stores/module/login'
 import UpdatePassword from './components/UpdatePassword'
 import LoadAvatar from './components/LoadAvatar'
 import { useNavigate } from 'react-router-dom'
@@ -73,7 +73,7 @@ const HeaderNav: React.FC = () => {
         okText: '确认',
         cancelText: '取消',
         onOk: async () => {
-          await dispatch(logoutOp())
+          await dispatch(logoOut())
           navigate('/login')
           messageApi.success('退出登入')
         }

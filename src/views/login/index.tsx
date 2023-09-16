@@ -10,7 +10,7 @@ import logo from '@/assets/login/logo.png'
 import bigLogo from '@/assets/login/big.png'
 import { loginParams, FormParams } from '@/services/types/login'
 
-import { operationLogin, selectLogin, doctorLogin } from '@/stores/module/login'
+import { loginUser, selectLogin } from '@/stores/module/login'
 import { message, Alert } from 'antd'
 import { useNavigate } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '@/stores'
@@ -41,11 +41,10 @@ const Login: React.FC = () => {
       const { type, ...otherValue } = value
       type && type === 'doctor'
         ? localStorage.setItem('type', type)
-        : localStorage.setItem('type', 'operation')
-      type === 'operation'
-        ? await dispatch(operationLogin(otherValue))
-        : await dispatch(doctorLogin(otherValue))
+        : localStorage.setItem('type', 'admin')
 
+      // await dispatch(userLogin(otherValue))
+      await dispatch(loginUser(otherValue))
       if (ref?.current === 200) {
         const defaultLoginSuccessMessage = '登录成功！'
         await messageApi
@@ -70,7 +69,6 @@ const Login: React.FC = () => {
   }
   return (
     <>
-      {contextHolder}
       {LoginState === 'error' && (
         <LoginMessage content={'错误的用户名和密码'} />
       )}
@@ -81,6 +79,7 @@ const Login: React.FC = () => {
             <img src={bigLogo} className={Styles.big} />
           </div>
           <div className={Styles.right}>
+            {contextHolder}
             <LoginForm
               subTitle={
                 <div className={Styles.title_container}>
@@ -133,7 +132,7 @@ const Login: React.FC = () => {
                   <ProFormRadio.Group
                     name="type"
                     radioType="button"
-                    fieldProps={{ value: 'operation' }}
+                    fieldProps={{ value: 'admin' }}
                     options={[
                       {
                         label: '医生端',
@@ -141,7 +140,7 @@ const Login: React.FC = () => {
                       },
                       {
                         label: '运营端',
-                        value: 'operation'
+                        value: 'admin'
                       }
                     ]}
                   />

@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import { loginDr, loginOp, loginOutOp, updatePhoto } from '@/services/api/login'
+import { login, loginOut, updatePhoto } from '@/services/api/login'
 import { loginParams, photoParams } from '@/services/types/login'
 import { RootState } from '..'
 
@@ -17,34 +17,23 @@ const initialState: stateType = {
 }
 
 /**
- * 运行端用户登入异步
+ * 用户登入异步
  */
-export const operationLogin = createAsyncThunk(
-  'loginO',
-  async (data: loginParams) => {
-    const res = await loginDr(data)
-    localStorage.setItem('token', res.data.token)
-    return res
-  }
-)
-/**
- *  医生端用户登入异步
- */
-export const doctorLogin = createAsyncThunk(
-  'loginD',
-  async (data: loginParams) => {
-    const res = await loginOp(data)
-    localStorage.setItem('token', res.data.token)
-    localStorage.setItem('name', res.data.name)
-    localStorage.setItem('photo', res.data.photo)
-    return res
-  }
-)
+export const loginUser = createAsyncThunk('login', async (data: loginParams) => {
+  const type = localStorage.getItem('type') as string
+  const res = await login(data, type)
+  localStorage.setItem('token', res.data.token)
+  localStorage.setItem('name', res.data.name)
+  localStorage.setItem('photo', res.data.photo)
+  return res
+})
+
 /**
  * 退出登入
  */
-export const logoutOp = createAsyncThunk('logoutO', async () => {
-  const { data } = await loginOutOp()
+export const logoOut = createAsyncThunk('logoutO', async () => {
+  const type = localStorage.getItem('type') as string
+  const { data } = await loginOut(type)
   localStorage.removeItem('token')
   localStorage.removeItem('openKeys')
   localStorage.removeItem('photo')
@@ -57,7 +46,8 @@ export const logoutOp = createAsyncThunk('logoutO', async () => {
 export const updateAavatar = createAsyncThunk(
   'avartar',
   async (data: photoParams) => {
-    const res = await updatePhoto(data)
+    const type = localStorage.getItem('type') as string
+    const res = await updatePhoto(data, type)
     localStorage.setItem('photo', res.data)
     return res
   }
@@ -68,19 +58,14 @@ const loginReducer = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(operationLogin.fulfilled, (state, { payload }) => {
+      .addCase(loginUser.fulfilled, (state, { payload }) => {
         state.token = payload.data.token
         state.photo = payload.data.photo
         state.name = payload.data.name
         state.code = payload.code
       })
-      .addCase(doctorLogin.fulfilled, (state, { payload }) => {
-        state.code = payload.code
-        state.photo = payload.data.photo
-        state.name = payload.data.name
-        state.token = payload.data.token
-      })
-      .addCase(logoutOp.fulfilled, () => {})
+
+      .addCase(logoOut.fulfilled, () => {})
       .addCase(updateAavatar.fulfilled, (state, { payload }) => {
         state.photo = payload.data
       })

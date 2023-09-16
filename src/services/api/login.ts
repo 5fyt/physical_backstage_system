@@ -1,43 +1,47 @@
 import hyRequest from '..'
 
 import type { loginParams, passwordParams, photoParams } from '../types/login'
-export const loginOp = (data: loginParams) => {
-  return hyRequest.post({
-    url: '/admin/login',
-    data
-  })
-}
 /**
  * 运营端登入
  * @param data
  * @returns
  */
-export const loginDr = (data: loginParams) => {
+export const login = (data: loginParams, type: string) => {
   return hyRequest.post({
-    url: '/admin/login',
+    url: `/${type}/login`,
     data
   })
 }
 
-export const loginOutOp = () => {
+/**
+ *退出登入
+ * @returns
+ */
+export const loginOut = (type: string) => {
   return hyRequest.post({
-    url: '/admin/logout'
+    url: `/${type}/logout`
   })
 }
-export const updatePassword = (data: passwordParams) => {
+
+/**
+ * 更改密码
+ * @param data
+ * @returns
+ */
+export const updatePassword = (data: passwordParams, type: string) => {
   return hyRequest.post({
-    url: '/admin/change-password',
+    url: `/${type}/change-password`,
     data
   })
 }
 /**
- * 运营端更换头像
+ * 更换头像
  * @param data
  * @returns
  */
-export const updatePhoto = (data: photoParams) => {
+export const updatePhoto = (data: photoParams, type: string) => {
   return hyRequest.post({
-    url: '/admin/change-photo',
+    url: `/${type}/change-photo`,
     data
   })
 }

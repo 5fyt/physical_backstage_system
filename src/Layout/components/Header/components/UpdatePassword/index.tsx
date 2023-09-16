@@ -28,7 +28,8 @@ const UpdatePassword: React.FC<ModalProps> = (props: ModalProps) => {
       if (newPassword !== confirmPassword) {
         messageApi.error('两次密码输入不一致请重新输入')
       } else {
-        updatePassword({ oldPassword, newPassword }).then((res) => {
+        const type = localStorage.getItem('type') as string
+        updatePassword({ oldPassword, newPassword }, type).then((res) => {
           if (res.code === 200) {
             messageApi.success('修改密码成功')
             setVisible(false)
