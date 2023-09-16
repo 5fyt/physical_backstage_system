@@ -6,7 +6,7 @@ const { Footer } = Layout
 const FooterBar: React.FC = () => {
   return (
     <>
-      <Footer style={{ textAlign: 'center' }}>
+      <Footer style={{ textAlign: 'center' ,backgroundColor:'#f0f2f5 '}}>
         Big Health ©2023 Created by FPH.
       </Footer>
     </>

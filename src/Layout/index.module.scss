@@ -1,19 +1,24 @@
 .container {
-	display: flex;
-	min-width: 950px;
-	height: 100%;
-	.ant-layout-sider {
-		box-sizing: border-box;
-	}
-	:global(.ant-layout) {
-		/* 防止 tabs 超出不收缩 */
-		overflow-x: hidden;
+  display: flex;
+  min-width: 950px;
+  height: 100%;
+  .ant-layout-sider {
+    box-sizing: border-box;
+  }
+  :global(.ant-layout) {
+    /* 防止 tabs 超出不收缩 */
+    overflow-x: hidden;
     height: 100%;
-		.ant-layout-content {
-			box-sizing: border-box;
-			flex: 1;
-			padding: 10px 12px;
-			overflow-x: hidden;
-		}
-	}
+
+    .ant-layout-content {
+      box-sizing: border-box;
+      flex: 1;
+      padding: 10px 12px;
+      overflow-x: hidden;
+    }
+
+  }
+  :where(.css-dev-only-do-not-override-18iikkb).ant-layout {
+    background-color: #f0f2f5 !important;
+  }
 }

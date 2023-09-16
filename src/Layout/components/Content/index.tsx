@@ -10,6 +10,7 @@ const Container: React.FC = () => {
     token: { colorBgContainer }
   } = theme.useToken()
   const ref = useRef<any>([])
+  const itemRef = useRef<any>([])
   const [heightView, setHeightView] = useState(0)
   //计算内容区高度
   const caculateHeight = () => {
@@ -22,16 +23,29 @@ const Container: React.FC = () => {
    * @param newArr
    * @returns 一个新的数组对象,包含了三个二级菜单和父级菜单的所有项
    */
-  const transBreadcrumbItems = (menuList: MenuOption[], newArr: any[] = []) => {
+  const transBreadcrumbItems = (
+    menuList: MenuOption[],
+    newArr: any[] = [],
+    type: string
+  ) => {
     menuList.forEach((item: MenuOption) => {
       const items = [{ key: item.path, title: item.title }]
       if (item?.children) {
         const itemChildren: any[] = []
         item.children.forEach((item: MenuOption) => {
-          const objItem = {
-            key: item.path,
-            title: <Link to={item.path}>{item.title}</Link>
+          let objItem
+          if (type === 'bread') {
+            objItem = {
+              key: item.path,
+              title: <Link to={item.path}>{item.title}</Link>
+            }
+          } else {
+            objItem = {
+              key: item.path,
+              title: item.title
+            }
           }
+
           itemChildren.push(objItem)
         })
         newArr.push(...items, ...itemChildren)
@@ -46,12 +60,16 @@ const Container: React.FC = () => {
   }, [])
   useEffect(() => {
     const newMenu = menuList.slice(1)
-    const BreadcrumbItems = transBreadcrumbItems(newMenu)
+    const BreadcrumbItems = transBreadcrumbItems(newMenu, [], 'bread')
     //筛选出父菜单项和路由对应的子菜单项
     const newItem = BreadcrumbItems.filter(
       (item) => item.key === pathname || item.key === pathname.split('/')[1]
     )
     ref.current = newItem
+    //筛选出子菜单title
+    itemRef.current = transBreadcrumbItems(newMenu, [], 'title').filter(
+      (item) => item.key === pathname || item.key === pathname.split('/')[1]
+    )[1]
   }, [pathname])
   //浏览器改变尺寸时
   window.onresize = () => {
@@ -69,9 +87,8 @@ const Container: React.FC = () => {
             }}
           >
             <div
+              className={Style.contect}
               style={{
-                padding: 24,
-                textAlign: 'center',
                 background: colorBgContainer
               }}
             >
@@ -81,15 +98,15 @@ const Container: React.FC = () => {
         </>
       ) : (
         <>
-          <Header
+          <div
             style={{
-              padding: 0,
-              background: colorBgContainer,
-              marginTop: '48px'
+              background: colorBgContainer
             }}
+            className={Style.bread_header}
           >
             <Breadcrumb items={ref.current} className={Style.Breadcrumb} />
-          </Header>
+            <h2>{itemRef.current.title}</h2>
+          </div>
           <Content
             style={{
               margin: '34px 16px 0',
@@ -98,9 +115,8 @@ const Container: React.FC = () => {
             }}
           >
             <div
+              className={Style.contect}
               style={{
-                padding: 24,
-                textAlign: 'center',
                 background: colorBgContainer
               }}
             >

@@ -4,7 +4,8 @@ import lazyLoad from './utils/lazyLoad'
 import { RouteConfig } from './interface'
 import BusinessRouter from './modules/business'
 import PhysicalRouter from './modules/physical'
-const RoutesArray = [BusinessRouter, PhysicalRouter]
+import UserRouter from './modules/user'
+const RoutesArray = [BusinessRouter, PhysicalRouter, UserRouter]
 const routes: RouteConfig[] = [
   {
     path: '/',

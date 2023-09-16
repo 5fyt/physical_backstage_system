@@ -1,0 +1,33 @@
+.search {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  :global {
+    .input {
+      display: flex;
+      justify-content: space-between;
+    }
+    :where(.css-dev-only-do-not-override-18iikkb).ant-btn {
+      margin-left: 10px;
+      border-radius: 0;
+    }
+    :where(.css-dev-only-do-not-override-18iikkb).ant-input {
+      border-radius: 0;
+      width: 237px;
+    }
+    .btn {
+      display: flex;
+      justify-content: flex-start;
+      margin-left: 120px;
+      .show{
+        margin-left: 10px;
+        margin-top: 5px;
+        color: #1890ff;
+        .icon{
+          margin-left: 3px;
+        }
+      }
+    }
+  }
+}

@@ -1,10 +1,28 @@
-.Breadcrumb{
+.Breadcrumb {
   margin: 15px;
 }
-:global(.ant-breadcrumb-link a){
+.bread_header h2 {
+  padding-left: 14px;
+  margin-top: -5px;
+}
+.bread_header {
+  padding: 0;
+  margin-top: 48px;
+  display: flex;
+  min-height: 64px;
+  flex-direction: column;
+}
+.contect {
+  padding: 24px;
+  text-align: center;
+}
+:global(.ant-breadcrumb-link a) {
   color: #000;
 }
-:global(.ant-breadcrumb-link a:hover){
+:global(.ant-breadcrumb-link a:hover) {
   color: #1890ff;
   background-color: #fff;
+}
+:global(:where(.css-dev-only-do-not-override-18iikkb).ant-layout) {
+  background-color: #f0f2f5 !important;
 }
