@@ -1,15 +1,19 @@
-import React, { memo, useRef, useState } from 'react'
-import { Form, Input, Button } from 'antd'
+import React, { memo, useEffect, useRef, useState } from 'react'
+import { Form, Input, Button, Select } from 'antd'
 import { UpOutlined, DownOutlined } from '@ant-design/icons'
 import Style from './index.module.scss'
-import { SearchType, objType } from '../../constant/searchConfig'
-
-const SearchForm: React.FC<SearchType<objType>> = ({
-  setSearchInfo,
-  searchConfig
-}) => {
-  const [visible, setVisible] = useState(false)
+import type { SelectProps } from 'antd'
+import { getTypes } from '@/services/api/goods'
+type searchType = {
+  setSearchInfo: (value: any) => void
+}
+const SearchForm: React.FC<searchType> = ({ setSearchInfo }) => {
+  const [visible, setVisible] = useState<boolean>(false)
+  const [show, setShow] = useState<boolean>(true)
   const [loading, setLoading] = useState(false)
+  const [options, setOptions] = useState<SelectProps['options']>([])
+  // const options = useRef<SelectProps['options'] | undefined>([])
+  const optionRef = useRef<SelectProps['options'] | undefined>([])
   const formRef = useRef<any>()
   //重置表单
   const resetBtn = () => {
@@ -19,59 +23,100 @@ const SearchForm: React.FC<SearchType<objType>> = ({
   const queryInfo = () => {
     setLoading(true)
     formRef.current?.validateFields().then((value: any) => {
+      console.log(value)
       setSearchInfo(value)
       setLoading(false)
     })
   }
+  const clickHandle = () => {
+    setVisible(!visible)
+    setShow(!show)
+  }
+  const handleChange = (value: any) => {
+    console.log(value)
+  }
+  const getOptions = async () => {
+    try {
+      const { data } = await getTypes()
+      setOptions((pre) => [...data.types])
+    } catch (err) {
+      console.log(err)
+    }
+  }
+  const transOptions = (newArr: any[] = []) => {
+    options?.forEach((item) => {
+      const obj = { label: item.name, value: item.type }
+      newArr.push(obj)
+    })
+    return newArr
+  }
+  useEffect(() => {
+    getOptions()
+    const optionItem = transOptions()
+    optionRef.current = optionItem
+    // console.log(optionRef.current)
+  }, [])
+
   return (
     <>
       <Form
         ref={formRef}
-        style={searchConfig.style}
-        layout={searchConfig.layout}
-        wrapperCol={searchConfig.wrapperCol}
-        labelCol={searchConfig.labelCol}
+        style={{ minWidth: '800px' }}
+        layout={'horizontal'}
+        wrapperCol={{ span: 14 }}
+        labelCol={{ span: 8 }}
       >
         <div className={Style.search}>
-          {searchConfig.searchList.map((item, key) => {
-            return (
-              //防止遍历时，找不到key唯一标识，但又可以做到不增加div
-              <React.Fragment key={key}>
-                {!visible ? (
-                  !item.show && (
-                    <div className="input">
-                      <Form.Item
-                        label={item.label}
-                        name={item.prop}
-                        tooltip={item.tooltip}
-                        style={item.style}
-                      >
-                        <Input />
-                      </Form.Item>
-                    </div>
-                  )
-                ) : (
-                  <div className="input">
-                    <Form.Item
-                      label={item.label}
-                      name={item.prop}
-                      tooltip={item.tooltip}
-                      style={item.style}
-                    >
-                      <Input />
-                    </Form.Item>
-                  </div>
-                )}
-              </React.Fragment>
+          {!visible ? (
+            show && (
+              <>
+                <div className="input">
+                  <Form.Item label="套餐名称" name="name" tooltip="商品套餐">
+                    <Input />
+                  </Form.Item>
+                </div>
+                <div className="input">
+                  <Form.Item label="套餐编号" name="code">
+                    <Input />
+                  </Form.Item>
+                </div>
+              </>
             )
-          })}
+          ) : (
+            <>
+              <div className="input">
+                <Form.Item label="套餐名称" name="name" tooltip="商品套餐">
+                  <Input />
+                </Form.Item>
+              </div>
+              <div className="input">
+                <Form.Item label="套餐编号" name="code">
+                  <Input />
+                </Form.Item>
+              </div>
+              <div className="input">
+                <Form.Item
+                  label="商品类别"
+                  name="type"
+                  style={{ paddingLeft: '5px' }}
+                >
+                  <Select
+                    style={{ width: 237 }}
+                    onChange={handleChange}
+                    options={optionRef.current}
+                  />
+                </Form.Item>
+              </div>
+            </>
+          )}
+
           <div className="input">
             <div className="btn">
               <Button onClick={resetBtn}>重置</Button>
               <Button type="primary" onClick={queryInfo} loading={loading}>
                 查询
               </Button>
-              <div className="show" onClick={() => setVisible(!visible)}>
+              <div className="show" onClick={clickHandle}>
                 {visible ? (
                   <>
                     <span>

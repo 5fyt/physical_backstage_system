@@ -109,16 +109,13 @@ const Container: React.FC = () => {
           </div>
           <Content
             style={{
-              margin: '34px 16px 0',
               overflow: 'initial',
               minHeight: `${heightView - 112}px`
             }}
           >
             <div
               className={Style.contect}
-              style={{
-                background: colorBgContainer
-              }}
+
             >
               <Outlet></Outlet>
             </div>

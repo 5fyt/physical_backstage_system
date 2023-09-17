@@ -1,6 +1,7 @@
 import { FormLayout } from 'antd/es/form/Form'
 
 export type objType = {
+  type:string
   prop: string
   label: string
   tooltip?: string
@@ -9,7 +10,7 @@ export type objType = {
 }
 
 export interface SearchType<T> {
-  setSearchInfo: (value:any) => void
+  setSearchInfo: (value: any) => void
   searchConfig: {
     layout: FormLayout
     wrapperCol: object
@@ -27,16 +28,22 @@ interface searchType<T> {
   searchList: T[]
 }
 const searchConfig: searchType<objType> = {
-  labelCol: { span: 8, offest: 10 },
-  wrapperCol: { span: 18, offest: 10 },
+  labelCol: { span: 8, offset: 10 },
+  wrapperCol: { span: 18, offset: 10 },
   layout: 'horizontal',
   style: { minWidth: 600, marginRight: '10px' },
   searchList: [
     {
-      label: '姓名',
+      type:'input',
+      label: '套餐名称',
       prop: 'name',
       tooltip: '这是搜索的唯一标识'
-    }
+    },
+    {
+      type:'input',
+      label: '套餐编号',
+      prop: 'code'
+    },
   ]
 }
 export default searchConfig
