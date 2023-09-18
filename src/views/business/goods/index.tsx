@@ -1,6 +1,7 @@
 import React, { memo, useState } from 'react'
 import Style from './index.module.scss'
 import SearchForm from '@/baseUI/components/SearchForm'
+import TableList from '@/baseUI/components/TableList'
 const Goods: React.FC = () => {
   const [searchInfo, setSearchInfo] = useState(null)
   return (
@@ -10,8 +11,7 @@ const Goods: React.FC = () => {
           setSearchInfo={(value) => setSearchInfo(value)}
         ></SearchForm>
       </div>
-
-      <div style={{ marginTop: '100px' }}>sssssssss</div>
+      <TableList></TableList>
     </div>
   )
 }

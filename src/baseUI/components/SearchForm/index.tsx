@@ -38,7 +38,9 @@ const SearchForm: React.FC<searchType> = ({ setSearchInfo }) => {
   const getOptions = async () => {
     try {
       const { data } = await getTypes()
-      setOptions((pre) => [...data.types])
+      if (data.types.length > 0) {
+        setOptions((pre) => [...data.types])
+      }
     } catch (err) {
       console.log(err)
     }

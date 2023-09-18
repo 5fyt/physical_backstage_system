@@ -22,8 +22,55 @@ html {
 a {
   text-decoration: none;
 }
+:where(.css-dev-only-do-not-override-18iikkb).ant-popover .ant-popover-inner {
+  padding: 0;
+}
+// :where(.css-dev-only-do-not-override-18iikkb).ant-checkbox{
+//   border-radius: 0;
+// }
+.ant-checkbox-inner {
+  border-radius: 2px !important;
+}
+.ant-tree-checkbox-inner {
+  border-radius: 2px !important;
+}
+:where(.css-dev-only-do-not-override-18iikkb).ant-tree
+  .ant-tree-treenode:hover {
+  background-color: #e6f7ff;
+  cursor: pointer;
+}
+.ant-tree-switcher.ant-tree-switcher-noop{
+  cursor: pointer;
+}
+:where(.css-dev-only-do-not-override-18iikkb).ant-tree
+  .ant-tree-node-content-wrapper.ant-tree-node-selected,
+:where(.css-dev-only-do-not-override-18iikkb).ant-tree
+  .ant-tree-checkbox
+  + span.ant-tree-node-selected {
+  background-color: rgba(0, 0, 0, 0);
+}
 
+:where(.css-dev-only-do-not-override-18iikkb).ant-tree
+  .ant-tree-node-content-wrapper:hover,
+:where(.css-dev-only-do-not-override-18iikkb).ant-tree
+  .ant-tree-checkbox
+  + span:hover {
+  background-color: rgba(0, 0, 0, 0);
+}
+:where(.css-dev-only-do-not-override-18iikkb).ant-popover .ant-popover-inner {
+  border-radius: 0;
+  width: 200px;
 
+  .setting_top {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 15px;
+    border-bottom: 1px solid #f0f0f0;
+  }
+}
+:where(.css-dev-only-do-not-override-18iikkb).ant-tree {
+  padding: 5px 0;
+}
 .App {
   height: 100vh;
   background-color: #f0f2f5;

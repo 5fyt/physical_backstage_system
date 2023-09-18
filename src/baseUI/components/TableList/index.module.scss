@@ -1,3 +1,26 @@
 .table{
-  display: flex;
+  margin-top: 15px;
+  padding: 20px;
+  min-height: 500px;
+  background-color: #fff;
+  :global{
+    .operation{
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      .left{
+        font-size: 18px;
+        font-weight: 500;
+      }
+      .right{
+        margin-right: 40px;
+
+        
+      }
+      :where(.css-dev-only-do-not-override-18iikkb).ant-btn{
+        border-radius: 0;
+        margin-right: 4px;
+      }
+    }
+  }
 }

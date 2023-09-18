@@ -14,7 +14,7 @@ const Container: React.FC = () => {
   const [heightView, setHeightView] = useState(0)
   //计算内容区高度
   const caculateHeight = () => {
-    const clientHeight = document.documentElement.clientHeight - 48 - 53
+    const clientHeight = document.documentElement.clientHeight - 48 - 48
     setHeightView(clientHeight)
   }
   /**
