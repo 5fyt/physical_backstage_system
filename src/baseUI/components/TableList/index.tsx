@@ -10,6 +10,7 @@ import {
 import type { MenuProps } from 'antd'
 
 import Content from './components/setting'
+import List from './components/list'
 
 //点击复选框触发
 
@@ -78,6 +79,9 @@ const TableList: React.FC = () => {
             </div>
           </Space>
         </div>
+      </div>
+      <div className="list">
+        <List></List>
       </div>
     </div>
   )
