@@ -1,4 +1,4 @@
-import React, { memo, useState } from 'react'
+import React, { memo, useEffect, useState } from 'react'
 import { Table, Space, Switch, Button } from 'antd'
 import type { ColumnsType, TableProps } from 'antd/es/table'
 import Style from '../components/styles/list.module.scss'
@@ -14,7 +14,10 @@ interface DataType {
   status: number
   hasExcel: boolean
 }
-const columns: ColumnsType<DataType> = [
+type Iprop = {
+  checkKeys: any[]
+}
+const defaultColumns: ColumnsType<DataType> = [
   {
     title: '套餐名字',
     key: '1',
@@ -208,9 +211,17 @@ const updateData = (record: any) => {
 const deleteData = (record: any) => {
   console.log(record)
 }
-const List: React.FC = () => {
+const List: React.FC<Iprop> = ({ checkKeys }) => {
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([])
-
+  //列选项数组
+  const [columns, setColumns] = useState(defaultColumns)
+  useEffect(() => {
+    console.log(checkKeys)
+    if (checkKeys.length > 0) {
+      const newColumns = columns.filter((item) => checkKeys.includes(item.key))
+      setColumns(newColumns)
+    }
+  }, [checkKeys])
   const onSelectChange = (
     newSelectedRowKeys: React.Key[],
     selectedRows: any

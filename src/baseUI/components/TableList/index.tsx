@@ -1,4 +1,4 @@
-import React, { memo } from 'react'
+import React, { memo, useEffect, useState } from 'react'
 import Style from './index.module.scss'
 import { Button, Dropdown, Space, Popover } from 'antd'
 import {
@@ -37,6 +37,14 @@ const items: MenuProps['items'] = [
   }
 ]
 const TableList: React.FC = () => {
+  const [checkKeys, setCheckKeys] = useState<string[]>([])
+  const getKeys = (value: string[]) => {
+    setCheckKeys(value)
+    console.log(value)
+  }
+  // useEffect(()=>{
+  //   getKeys()
+  // },[])
   return (
     <div className={Style.table}>
       <div className="operation">
@@ -67,7 +75,7 @@ const TableList: React.FC = () => {
             </div>
             <div className="settings">
               <Popover
-                content={<Content></Content>}
+                content={<Content updateCheckKeys={getKeys}></Content>}
                 trigger="click"
                 placement="bottomRight"
                 align={{
@@ -81,7 +89,7 @@ const TableList: React.FC = () => {
         </div>
       </div>
       <div className="list">
-        <List></List>
+        <List checkKeys={checkKeys}></List>
       </div>
     </div>
   )

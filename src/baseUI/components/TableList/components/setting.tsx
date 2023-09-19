@@ -3,35 +3,58 @@ import React, { useEffect, useState, useRef } from 'react'
 import { Checkbox, Tree } from 'antd'
 
 import type { DataNode, TreeProps } from 'antd/es/tree'
-
+type Iprop = {
+  updateCheckKeys: (value: string[]) => void
+}
 //判断是否是全选
-const Content: React.FC = () => {
+const Content: React.FC<Iprop> = ({ updateCheckKeys }) => {
   //当悬停在某个子节点时，显示图标
   // useEffect(() => {
   //   const eles = document.querySelectorAll(
   //     '.ant-tree-treenode.ant-tree-treenode-switcher-close'
   //   ) as any
   // }, [])
+
   const defaultData: DataNode[] = [
     {
-      title: '规则名称',
+      title: '套餐名字',
       key: '1'
     },
     {
-      title: '描述',
+      title: '套餐编号',
       key: '2'
     },
     {
-      title: '服务调用次数',
+      title: '现价',
       key: '3'
     },
     {
-      title: '状态',
-      key: '4'
+      key: '4',
+      title: '原价'
     },
     {
-      title: '上次调用时间',
-      key: '5'
+      key: '5',
+      title: '促销方案'
+    },
+    {
+      key: '6',
+      title: '销量'
+    },
+    {
+      key: '7',
+      title: '类型'
+    },
+    {
+      key: '8',
+      title: '体检内容'
+    },
+    {
+      key: '9',
+      title: '状态'
+    },
+    {
+      key: '10',
+      title: '操作'
     }
   ]
   const getKeys = (newArr: any[] = []) => {
@@ -42,10 +65,12 @@ const Content: React.FC = () => {
   }
   useEffect(() => {
     keysRef.current = getKeys()
+    updateCheckKeys(keysRef.current)
   }, [])
   //判断是否是全选，全选和树组件的复选框双向绑定
   const onCheckAllChange = (value: any) => {
     setCheckedAll(value.target.checked)
+
     if (value.target.checked) {
       setCheckedKeys(keysRef.current)
     } else {
@@ -54,7 +79,9 @@ const Content: React.FC = () => {
   }
   //勾选树组件，同步勾选状态和全选
   const onCheckHandle = (checkKeys: any) => {
+    console.log(checkKeys)
     setCheckedKeys(checkKeys)
+    updateCheckKeys(checkKeys)
     if (checkKeys.length === defaultData.length) {
       setCheckedAll(true)
     } else {
@@ -67,6 +94,7 @@ const Content: React.FC = () => {
     setCheckedAll(true)
     setCheckedKeys(keysRef.current)
   }
+
   const [gData, setGData] = useState(defaultData)
   const keysRef = useRef<any[]>()
   const [checkedKeys, setCheckedKeys] = useState<any>(getKeys())
