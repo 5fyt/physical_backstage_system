@@ -38,9 +38,12 @@ const items: MenuProps['items'] = [
 ]
 const TableList: React.FC = () => {
   const [checkKeys, setCheckKeys] = useState<string[]>([])
+  const [show, setShow] = useState(true)
   const getKeys = (value: string[]) => {
     setCheckKeys(value)
-    console.log(value)
+  }
+  const showChecked = (value: boolean) => {
+    setShow(value)
   }
   // useEffect(()=>{
   //   getKeys()
@@ -75,7 +78,12 @@ const TableList: React.FC = () => {
             </div>
             <div className="settings">
               <Popover
-                content={<Content updateCheckKeys={getKeys}></Content>}
+                content={
+                  <Content
+                    updateCheckKeys={getKeys}
+                    showCheck={showChecked}
+                  ></Content>
+                }
                 trigger="click"
                 placement="bottomRight"
                 align={{
@@ -89,7 +97,7 @@ const TableList: React.FC = () => {
         </div>
       </div>
       <div className="list">
-        <List checkKeys={checkKeys}></List>
+        <List checkKeys={checkKeys} show={show}></List>
       </div>
     </div>
   )

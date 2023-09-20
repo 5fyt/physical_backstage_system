@@ -16,6 +16,7 @@ interface DataType {
 }
 type Iprop = {
   checkKeys: any[]
+  show: boolean
 }
 const defaultColumns: ColumnsType<DataType> = [
   {
@@ -200,7 +201,7 @@ const data: DataType[] = [
     hasExcel: true
   }
 ]
-
+//操作表格数据
 const preView = (record: any) => {
   console.log('fff')
   console.log(record)
@@ -211,17 +212,28 @@ const updateData = (record: any) => {
 const deleteData = (record: any) => {
   console.log(record)
 }
-const List: React.FC<Iprop> = ({ checkKeys }) => {
+const List: React.FC<Iprop> = ({ checkKeys, show }) => {
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([])
   //列选项数组
   const [columns, setColumns] = useState(defaultColumns)
   useEffect(() => {
-    console.log(checkKeys)
-    if (checkKeys.length > 0) {
+    if (checkKeys.length === 0 && show) {
+      setColumns(defaultColumns)
+    } else if (checkKeys.length > 0 && !show) {
       const newColumns = columns.filter((item) => checkKeys.includes(item.key))
       setColumns(newColumns)
+    } else if (checkKeys.length === 0 && !show) {
+      setColumns([])
+    } else {
+      setColumns(defaultColumns)
     }
-  }, [checkKeys])
+    // if (checkKeys.length > 0) {
+
+    // } else if (!show) {
+    //   setColumns([])
+    // }
+  }, [checkKeys, show])
+  //监听表格选中项
   const onSelectChange = (
     newSelectedRowKeys: React.Key[],
     selectedRows: any
@@ -230,13 +242,13 @@ const List: React.FC<Iprop> = ({ checkKeys }) => {
     console.log(selectedRows)
     setSelectedRowKeys(newSelectedRowKeys)
   }
-
+  //表格选中配置项
   const rowSelection = {
     selectedRowKeys,
     onChange: onSelectChange
   }
   const hasSelected = selectedRowKeys.length > 0
-
+  //表格监听变化
   const onChange: TableProps<DataType>['onChange'] = (
     pagination,
     filters,
@@ -245,6 +257,7 @@ const List: React.FC<Iprop> = ({ checkKeys }) => {
   ) => {
     console.log('params', pagination, filters, sorter, extra)
   }
+  //取消选中
   const cancelHandle = () => {
     setSelectedRowKeys([])
   }

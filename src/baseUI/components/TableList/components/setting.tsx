@@ -5,9 +5,10 @@ import { Checkbox, Tree } from 'antd'
 import type { DataNode, TreeProps } from 'antd/es/tree'
 type Iprop = {
   updateCheckKeys: (value: string[]) => void
+  showCheck: (value: boolean) => void
 }
 //判断是否是全选
-const Content: React.FC<Iprop> = ({ updateCheckKeys }) => {
+const Content: React.FC<Iprop> = ({ updateCheckKeys, showCheck }) => {
   //当悬停在某个子节点时，显示图标
   // useEffect(() => {
   //   const eles = document.querySelectorAll(
@@ -73,8 +74,13 @@ const Content: React.FC<Iprop> = ({ updateCheckKeys }) => {
 
     if (value.target.checked) {
       setCheckedKeys(keysRef.current)
+      updateCheckKeys(keysRef.current as string[])
+      showCheck(value.target.checked)
     } else {
+      //没有选中时，表格数据全部隐藏，其他复选框也为不选中
       setCheckedKeys([])
+      updateCheckKeys([])
+      showCheck(value.target.checked)
     }
   }
   //勾选树组件，同步勾选状态和全选
@@ -84,8 +90,10 @@ const Content: React.FC<Iprop> = ({ updateCheckKeys }) => {
     updateCheckKeys(checkKeys)
     if (checkKeys.length === defaultData.length) {
       setCheckedAll(true)
+      showCheck(true)
     } else {
       setCheckedAll(false)
+      showCheck(false)
     }
   }
   //重置复选框
@@ -93,6 +101,8 @@ const Content: React.FC<Iprop> = ({ updateCheckKeys }) => {
     setGData(defaultData)
     setCheckedAll(true)
     setCheckedKeys(keysRef.current)
+    updateCheckKeys(keysRef.current as string[])
+    showCheck(true)
   }
 
   const [gData, setGData] = useState(defaultData)
@@ -180,9 +190,9 @@ const Content: React.FC<Iprop> = ({ updateCheckKeys }) => {
         >
           列展示
         </Checkbox>
-        <a href="#" onClick={resetHandle}>
+        <span style={{ color: '#2697ff' }} onClick={resetHandle}>
           重置
-        </a>
+        </span>
       </div>
       <div className="setting_bottom">
         <Tree
