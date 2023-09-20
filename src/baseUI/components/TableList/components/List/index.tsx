@@ -1,10 +1,11 @@
 import React, { memo, useEffect, useState } from 'react'
 import { Table, Space, Switch, Button } from 'antd'
 import type { ColumnsType, TableProps } from 'antd/es/table'
-import Style from '../components/styles/list.module.scss'
+import Style from '../styles/list.module.scss'
 import { useAppDispatch, useAppSelector } from '@/stores'
-import { pageIndex, pageSize } from '@/stores/module/goods'
+import { pageIndex, pageSize, updatePage } from '@/stores/module/goods'
 import { results, totalCount } from '@/stores/module/goods'
+import { SizeType } from 'antd/es/config-provider/SizeContext'
 interface DataType {
   key: React.Key
   name: string
@@ -20,6 +21,8 @@ interface DataType {
 type Iprop = {
   checkKeys: any[]
   show: boolean
+  sz:SizeType
+  loadList: (value: any) => void
 }
 const defaultColumns: ColumnsType<DataType> = [
   {
@@ -154,56 +157,7 @@ const defaultColumns: ColumnsType<DataType> = [
     )
   }
 ]
-// const data: DataType[] = [
-//   {
-//     key: '1',
-//     name: 'aaa',
-//     code: 'djkslds',
-//     currentPrice: '99.0',
-//     originalPrice: '93.2',
-//     discount: '打七折',
-//     salesVolume: 100,
-//     type: '父母体检',
-//     status: 1,
-//     hasExcel: true
-//   },
-//   {
-//     key: '2',
-//     name: 'bbb',
-//     code: 'djkslds',
-//     currentPrice: '99.0',
-//     originalPrice: '93.2',
-//     discount: '打七折',
-//     salesVolume: 100,
-//     type: '父母体检',
-//     status: 1,
-//     hasExcel: true
-//   },
-//   {
-//     key: '3',
-//     name: 'ccc',
-//     code: 'djkslds',
-//     currentPrice: '91.0',
-//     originalPrice: '99.2',
-//     discount: '打七折',
-//     salesVolume: 200,
-//     type: '父母体检',
-//     status: 1,
-//     hasExcel: true
-//   },
-//   {
-//     key: '4',
-//     name: 'sss',
-//     code: 'djkslds',
-//     currentPrice: '91.0',
-//     originalPrice: '95.2',
-//     discount: '打七折',
-//     salesVolume: 300,
-//     type: '父母体检',
-//     status: 1,
-//     hasExcel: true
-//   }
-// ]
+
 //操作表格数据
 const preView = (record: any) => {
   console.log('fff')
@@ -215,14 +169,14 @@ const updateData = (record: any) => {
 const deleteData = (record: any) => {
   console.log(record)
 }
-const List: React.FC<Iprop> = ({ checkKeys, show }) => {
+const List: React.FC<Iprop> = ({ checkKeys, show, loadList,sz }) => {
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([])
   //列选项数组
   const [columns, setColumns] = useState(defaultColumns)
   const size = useAppSelector(pageSize)
   const page = useAppSelector(pageIndex)
   const total = useAppSelector(totalCount)
-  const data=useAppSelector(results)
+  const data = useAppSelector(results)
   const dispatch = useAppDispatch()
   //表格与设置按钮交互
   useEffect(() => {
@@ -259,14 +213,16 @@ const List: React.FC<Iprop> = ({ checkKeys, show }) => {
     sorter,
     extra
   ) => {
-    console.log('params', pagination, filters, sorter, extra)
+    const { current, pageSize } = pagination
+    dispatch(updatePage({ current, pageSize }))
+    loadList({ page: current, size: pageSize })
+    // console.log('params', pagination, filters, sorter, extra)
   }
   //取消选中
   const cancelHandle = () => {
     setSelectedRowKeys([])
   }
-  //分页器页码，最大页数发生变化
-  const changeHandle=()=>{}
+
   return (
     <div className={Style.content}>
       {hasSelected && (
@@ -287,8 +243,8 @@ const List: React.FC<Iprop> = ({ checkKeys, show }) => {
         columns={columns}
         dataSource={data}
         onChange={onChange}
+        size={sz}
         pagination={{
-          onChange: changeHandle,
           pageSize: size,
           total: total,
           current: page,

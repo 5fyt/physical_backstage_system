@@ -37,19 +37,26 @@ export const searchGoodsAsync = createAsyncThunk(
 export const goodsSlice = createSlice({
   name: 'goods',
   initialState,
-  reducers: {},
+  reducers: {
+    updatePage: (state, { payload }) => {
+      state.page = payload.current
+      state.size = payload.pageSize
+    }
+  },
   extraReducers: (builder) => {
     builder.addCase(searchGoodsAsync.fulfilled, (state, { payload }) => {
-      state.totalCount = payload.data.total
-      const results = payload.data.results
-      state.results = results.map((item: any) => {
+      state.totalCount = payload.data?.total
+      const results = payload.data?.results
+      state.results = results?.map((item: any) => {
         return { ...item, key: item.id }
       })
     })
   }
 })
+export const { updatePage } = goodsSlice.actions
 export const totalCount = (state: RootState) => state.goods.totalCount
 export const results = (state: RootState) => state.goods.results
 export const pageIndex = (state: RootState) => state.goods.page
 export const pageSize = (state: RootState) => state.goods.size
+
 export default goodsSlice.reducer

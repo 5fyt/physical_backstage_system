@@ -9,10 +9,11 @@ import {
   SettingOutlined
 } from '@ant-design/icons'
 import type { MenuProps } from 'antd'
-import Content from './components/setting'
-import List from './components/list'
+import Content from './components/Setting'
+import List from './components/List'
 import { useAppDispatch, useAppSelector } from '@/stores'
 import { pageIndex, pageSize, searchGoodsAsync } from '@/stores/module/goods'
+import { SizeType } from 'antd/es/config-provider/SizeContext'
 //点击复选框触发
 /**
  * 设置表格，当默认状态显示的是表格对应的父树节点，且独占一行，父节点前面icon自定义，父节点后面有固定在列首和列尾两个icon图标
@@ -29,30 +30,35 @@ type Iprop = {
     type?: number
   }
 }
-const items: MenuProps['items'] = [
-  {
-    label: <div>默认</div>,
-    key: '0'
-  },
-  {
-    label: <div>中等</div>,
-    key: '1'
-  },
-  {
-    label: <div>紧凑</div>,
-    key: '3'
-  }
-]
+
 const options = [
   { label: '已上架', value: 1 },
   { label: '已下架', value: 2 }
 ]
 const TableList: React.FC<Iprop> = ({ searchInfo }) => {
+  const items: MenuProps['items'] = [
+    {
+      label: <div>默认</div>,
+      key: '0',
+      onClick: () => setSz('large')
+    },
+    {
+      label: <div>中等</div>,
+      key: '1',
+      onClick: () => setSz('middle')
+    },
+    {
+      label: <div>紧凑</div>,
+      key: '3',
+      onClick: () => setSz('small')
+    }
+  ]
   const size = useAppSelector(pageSize)
   const page = useAppSelector(pageIndex)
 
   const dispatch = useAppDispatch()
   const [value, setValue] = useState(1)
+  const [sz, setSz] = useState<SizeType>('middle')
   //list 传过来的值
   const [checkKeys, setCheckKeys] = useState<string[]>([])
   const [show, setShow] = useState(true)
@@ -101,7 +107,7 @@ const TableList: React.FC<Iprop> = ({ searchInfo }) => {
               </Button>
             </div>
             <div className="refresh">
-              <ReloadOutlined style={{ fontSize: '16px' }} />
+              <ReloadOutlined style={{ fontSize: '16px' }} onClick={()=>loadList()} />
             </div>
             <div className="updateWidth">
               <Dropdown
@@ -138,7 +144,12 @@ const TableList: React.FC<Iprop> = ({ searchInfo }) => {
         </div>
       </div>
       <div className="list">
-        <List checkKeys={checkKeys} show={show}></List>
+        <List
+          checkKeys={checkKeys}
+          show={show}
+          loadList={(value) => loadList(value)}
+          sz={sz}
+        ></List>
       </div>
     </div>
   )
