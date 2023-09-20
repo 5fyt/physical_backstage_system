@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useState } from 'react'
+import React, { memo, useEffect, useState, useRef } from 'react'
 import Style from './index.module.scss'
 import { Button, Dropdown, Space, Popover, Radio } from 'antd'
 import type { RadioChangeEvent } from 'antd'
@@ -14,6 +14,7 @@ import List from './components/List'
 import { useAppDispatch, useAppSelector } from '@/stores'
 import { pageIndex, pageSize, searchGoodsAsync } from '@/stores/module/goods'
 import { SizeType } from 'antd/es/config-provider/SizeContext'
+import AddGoods from '../DialogForm/index'
 //点击复选框触发
 /**
  * 设置表格，当默认状态显示的是表格对应的父树节点，且独占一行，父节点前面icon自定义，父节点后面有固定在列首和列尾两个icon图标
@@ -30,7 +31,9 @@ type Iprop = {
     type?: number
   }
 }
-
+interface ModalProps {
+  showModal: () => void
+}
 const options = [
   { label: '已上架', value: 1 },
   { label: '已下架', value: 2 }
@@ -59,6 +62,7 @@ const TableList: React.FC<Iprop> = ({ searchInfo }) => {
   const dispatch = useAppDispatch()
   const [value, setValue] = useState(1)
   const [sz, setSz] = useState<SizeType>('middle')
+  const showRef = useRef<ModalProps>(null)
   //list 传过来的值
   const [checkKeys, setCheckKeys] = useState<string[]>([])
   const [show, setShow] = useState(true)
@@ -88,7 +92,9 @@ const TableList: React.FC<Iprop> = ({ searchInfo }) => {
     }
     loadList({ ...data, ...searchInfo })
   }
-
+  const addShow = () => {
+    showRef.current?.showModal()
+  }
   return (
     <div className={Style.table}>
       <div className="operation">
@@ -102,12 +108,15 @@ const TableList: React.FC<Iprop> = ({ searchInfo }) => {
               optionType="button"
             />
             <div className="add">
-              <Button type="primary" icon={<PlusOutlined />}>
+              <Button type="primary" icon={<PlusOutlined />} onClick={addShow}>
                 新建
               </Button>
             </div>
             <div className="refresh">
-              <ReloadOutlined style={{ fontSize: '16px' }} onClick={()=>loadList()} />
+              <ReloadOutlined
+                style={{ fontSize: '16px' }}
+                onClick={() => loadList()}
+              />
             </div>
             <div className="updateWidth">
               <Dropdown
@@ -151,6 +160,7 @@ const TableList: React.FC<Iprop> = ({ searchInfo }) => {
           sz={sz}
         ></List>
       </div>
+      <AddGoods innerRef={showRef}></AddGoods>
     </div>
   )
 }

@@ -1,7 +1,7 @@
 import React, { memo, useState } from 'react'
 import Style from './index.module.scss'
-import SearchForm from '@/baseUI/components/SearchForm'
-import TableList from '@/baseUI/components/TableList'
+import SearchForm from './components/SearchForm'
+import TableList from './components/TableList'
 const Goods: React.FC = () => {
   const [searchInfo, setSearchInfo] = useState<any>(null)
   return (

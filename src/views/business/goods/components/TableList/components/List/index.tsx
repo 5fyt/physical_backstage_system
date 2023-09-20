@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useState } from 'react'
+import React, { memo, useEffect, useState, useRef } from 'react'
 import { Table, Space, Switch, Button } from 'antd'
 import type { ColumnsType, TableProps } from 'antd/es/table'
 import Style from '../styles/list.module.scss'
@@ -21,9 +21,10 @@ interface DataType {
 type Iprop = {
   checkKeys: any[]
   show: boolean
-  sz:SizeType
+  sz: SizeType
   loadList: (value: any) => void
 }
+
 const defaultColumns: ColumnsType<DataType> = [
   {
     title: '套餐名字',
@@ -169,10 +170,11 @@ const updateData = (record: any) => {
 const deleteData = (record: any) => {
   console.log(record)
 }
-const List: React.FC<Iprop> = ({ checkKeys, show, loadList,sz }) => {
+const List: React.FC<Iprop> = ({ checkKeys, show, loadList, sz }) => {
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([])
   //列选项数组
   const [columns, setColumns] = useState(defaultColumns)
+ 
   const size = useAppSelector(pageSize)
   const page = useAppSelector(pageIndex)
   const total = useAppSelector(totalCount)
@@ -276,6 +278,7 @@ const List: React.FC<Iprop> = ({ checkKeys, show, loadList,sz }) => {
           </div>
         </div>
       )}
+
     </div>
   )
 }
