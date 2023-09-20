@@ -1,6 +1,7 @@
 import React, { memo, useEffect, useState } from 'react'
 import Style from './index.module.scss'
-import { Button, Dropdown, Space, Popover } from 'antd'
+import { Button, Dropdown, Space, Popover, Radio } from 'antd'
+import type { RadioChangeEvent } from 'antd'
 import {
   PlusOutlined,
   ReloadOutlined,
@@ -8,12 +9,11 @@ import {
   SettingOutlined
 } from '@ant-design/icons'
 import type { MenuProps } from 'antd'
-
 import Content from './components/setting'
 import List from './components/list'
-
+import { useAppDispatch, useAppSelector } from '@/stores'
+import { pageIndex, pageSize, searchGoodsAsync } from '@/stores/module/goods'
 //点击复选框触发
-
 /**
  * 设置表格，当默认状态显示的是表格对应的父树节点，且独占一行，父节点前面icon自定义，父节点后面有固定在列首和列尾两个icon图标
  * 当点击固定列首icon图标，将点击这项添加到固定左侧父节点中的子节点，该子节点和父节点失去前面的icon图标，该子节点后面的固定列首图标变成不固定图标和固定在列尾，剩余的父节点被添加进不固定的父节点中的子节点，子节点保留前面的icon图标
@@ -22,6 +22,13 @@ import List from './components/list'
  *
  */
 
+type Iprop = {
+  searchInfo: {
+    name?: string
+    code?: string
+    type?: number
+  }
+}
 const items: MenuProps['items'] = [
   {
     label: <div>默认</div>,
@@ -36,7 +43,17 @@ const items: MenuProps['items'] = [
     key: '3'
   }
 ]
-const TableList: React.FC = () => {
+const options = [
+  { label: '已上架', value: 1 },
+  { label: '已下架', value: 2 }
+]
+const TableList: React.FC<Iprop> = ({ searchInfo }) => {
+  const size = useAppSelector(pageSize)
+  const page = useAppSelector(pageIndex)
+
+  const dispatch = useAppDispatch()
+  const [value, setValue] = useState(1)
+  //list 传过来的值
   const [checkKeys, setCheckKeys] = useState<string[]>([])
   const [show, setShow] = useState(true)
   const getKeys = (value: string[]) => {
@@ -45,15 +62,39 @@ const TableList: React.FC = () => {
   const showChecked = (value: boolean) => {
     setShow(value)
   }
-  // useEffect(()=>{
-  //   getKeys()
-  // },[])
+  //获取表格数据
+  const loadList = async (info?: any) => {
+    const data = {
+      page,
+      size
+    }
+    await dispatch(searchGoodsAsync({ ...data, ...info }))
+  }
+  useEffect(() => {
+    loadList(searchInfo)
+  }, [searchInfo])
+
+  //切换radio查询数据
+  const onChangeHandle = ({ target: { value } }: RadioChangeEvent) => {
+    setValue(value)
+    const data = {
+      status: value
+    }
+    loadList({ ...data, ...searchInfo })
+  }
+
   return (
     <div className={Style.table}>
       <div className="operation">
         <div className="left">查询套餐</div>
         <div className="right">
           <Space size={'middle'}>
+            <Radio.Group
+              options={options}
+              onChange={onChangeHandle}
+              value={value}
+              optionType="button"
+            />
             <div className="add">
               <Button type="primary" icon={<PlusOutlined />}>
                 新建

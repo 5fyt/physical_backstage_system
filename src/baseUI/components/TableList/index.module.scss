@@ -29,6 +29,15 @@
       > td {
       background-color: #dcf4ff !important;
     }
-    
+    :where(
+        .css-dev-only-do-not-override-18iikkb
+      ).ant-radio-button-wrapper:first-child {
+      border-radius: 0;
+    }
+    :where(
+        .css-dev-only-do-not-override-18iikkb
+      ).ant-radio-button-wrapper:last-child {
+      border-radius: 0;
+    }
   }
 }

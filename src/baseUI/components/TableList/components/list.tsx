@@ -2,6 +2,9 @@ import React, { memo, useEffect, useState } from 'react'
 import { Table, Space, Switch, Button } from 'antd'
 import type { ColumnsType, TableProps } from 'antd/es/table'
 import Style from '../components/styles/list.module.scss'
+import { useAppDispatch, useAppSelector } from '@/stores'
+import { pageIndex, pageSize } from '@/stores/module/goods'
+import { results, totalCount } from '@/stores/module/goods'
 interface DataType {
   key: React.Key
   name: string
@@ -151,56 +154,56 @@ const defaultColumns: ColumnsType<DataType> = [
     )
   }
 ]
-const data: DataType[] = [
-  {
-    key: '1',
-    name: 'aaa',
-    code: 'djkslds',
-    currentPrice: '99.0',
-    originalPrice: '93.2',
-    discount: '打七折',
-    salesVolume: 100,
-    type: '父母体检',
-    status: 1,
-    hasExcel: true
-  },
-  {
-    key: '2',
-    name: 'bbb',
-    code: 'djkslds',
-    currentPrice: '99.0',
-    originalPrice: '93.2',
-    discount: '打七折',
-    salesVolume: 100,
-    type: '父母体检',
-    status: 1,
-    hasExcel: true
-  },
-  {
-    key: '3',
-    name: 'ccc',
-    code: 'djkslds',
-    currentPrice: '91.0',
-    originalPrice: '99.2',
-    discount: '打七折',
-    salesVolume: 200,
-    type: '父母体检',
-    status: 1,
-    hasExcel: true
-  },
-  {
-    key: '4',
-    name: 'sss',
-    code: 'djkslds',
-    currentPrice: '91.0',
-    originalPrice: '95.2',
-    discount: '打七折',
-    salesVolume: 300,
-    type: '父母体检',
-    status: 1,
-    hasExcel: true
-  }
-]
+// const data: DataType[] = [
+//   {
+//     key: '1',
+//     name: 'aaa',
+//     code: 'djkslds',
+//     currentPrice: '99.0',
+//     originalPrice: '93.2',
+//     discount: '打七折',
+//     salesVolume: 100,
+//     type: '父母体检',
+//     status: 1,
+//     hasExcel: true
+//   },
+//   {
+//     key: '2',
+//     name: 'bbb',
+//     code: 'djkslds',
+//     currentPrice: '99.0',
+//     originalPrice: '93.2',
+//     discount: '打七折',
+//     salesVolume: 100,
+//     type: '父母体检',
+//     status: 1,
+//     hasExcel: true
+//   },
+//   {
+//     key: '3',
+//     name: 'ccc',
+//     code: 'djkslds',
+//     currentPrice: '91.0',
+//     originalPrice: '99.2',
+//     discount: '打七折',
+//     salesVolume: 200,
+//     type: '父母体检',
+//     status: 1,
+//     hasExcel: true
+//   },
+//   {
+//     key: '4',
+//     name: 'sss',
+//     code: 'djkslds',
+//     currentPrice: '91.0',
+//     originalPrice: '95.2',
+//     discount: '打七折',
+//     salesVolume: 300,
+//     type: '父母体检',
+//     status: 1,
+//     hasExcel: true
+//   }
+// ]
 //操作表格数据
 const preView = (record: any) => {
   console.log('fff')
@@ -216,6 +219,12 @@ const List: React.FC<Iprop> = ({ checkKeys, show }) => {
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([])
   //列选项数组
   const [columns, setColumns] = useState(defaultColumns)
+  const size = useAppSelector(pageSize)
+  const page = useAppSelector(pageIndex)
+  const total = useAppSelector(totalCount)
+  const data=useAppSelector(results)
+  const dispatch = useAppDispatch()
+  //表格与设置按钮交互
   useEffect(() => {
     if (checkKeys.length === 0 && show) {
       setColumns(defaultColumns)
@@ -227,11 +236,6 @@ const List: React.FC<Iprop> = ({ checkKeys, show }) => {
     } else {
       setColumns(defaultColumns)
     }
-    // if (checkKeys.length > 0) {
-
-    // } else if (!show) {
-    //   setColumns([])
-    // }
   }, [checkKeys, show])
   //监听表格选中项
   const onSelectChange = (
@@ -261,6 +265,8 @@ const List: React.FC<Iprop> = ({ checkKeys, show }) => {
   const cancelHandle = () => {
     setSelectedRowKeys([])
   }
+  //分页器页码，最大页数发生变化
+  const changeHandle=()=>{}
   return (
     <div className={Style.content}>
       {hasSelected && (
@@ -281,6 +287,14 @@ const List: React.FC<Iprop> = ({ checkKeys, show }) => {
         columns={columns}
         dataSource={data}
         onChange={onChange}
+        pagination={{
+          onChange: changeHandle,
+          pageSize: size,
+          total: total,
+          current: page,
+          pageSizeOptions: [10, 20, 30],
+          showSizeChanger: true
+        }}
       />
       {hasSelected && (
         <div className="footer_bar">

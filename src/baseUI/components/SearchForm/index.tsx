@@ -18,6 +18,7 @@ const SearchForm: React.FC<searchType> = ({ setSearchInfo }) => {
   //重置表单
   const resetBtn = () => {
     formRef.current?.resetFields()
+    setSearchInfo(null)
   }
   //查询数据
   const queryInfo = () => {
@@ -25,7 +26,9 @@ const SearchForm: React.FC<searchType> = ({ setSearchInfo }) => {
     formRef.current?.validateFields().then((value: any) => {
       console.log(value)
       setSearchInfo(value)
-      setLoading(false)
+      setTimeout(() => {
+        setLoading(false)
+      }, 300)
     })
   }
   const clickHandle = () => {
@@ -56,7 +59,6 @@ const SearchForm: React.FC<searchType> = ({ setSearchInfo }) => {
     getOptions()
     const optionItem = transOptions()
     optionRef.current = optionItem
-    // console.log(optionRef.current)
   }, [])
 
   return (

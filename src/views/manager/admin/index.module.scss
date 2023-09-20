@@ -1,6 +1,7 @@
 .container {
   background-color: #fff;
   min-height: 600px;
+  padding: 25px;
   :global {
     :where(.css-dev-only-do-not-override-18iikkb).ant-list
       .ant-list-item
