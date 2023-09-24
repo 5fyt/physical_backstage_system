@@ -11,13 +11,22 @@ export const getTypes = () => {
   })
 }
 /**
+ * 折扣列表
+ * @returns
+ */
+export const discountList=()=>{
+  return hyRequest.get({
+    url:'/discount/list',
+  })
+}
+/**
  * 搜索商品数据
  * @param data 默认从第一页开始，页数十条
  * @returns
  */
 export const searchGoods = (data = { page: 1, size: 10 }) => {
   return hyRequest.post({
-    url: '/goods/search',
+    url: '/goods/admin/search',
     data
   })
 }

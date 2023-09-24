@@ -104,7 +104,7 @@ const defaultColumns: ColumnsType<DataType> = [
                 有文档
               </Button>
             ) : (
-              <Button type="dashed" ghost>
+              <Button type="primary" ghost>
                 无文档
               </Button>
             )}
@@ -174,7 +174,7 @@ const List: React.FC<Iprop> = ({ checkKeys, show, loadList, sz }) => {
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([])
   //列选项数组
   const [columns, setColumns] = useState(defaultColumns)
- 
+
   const size = useAppSelector(pageSize)
   const page = useAppSelector(pageIndex)
   const total = useAppSelector(totalCount)

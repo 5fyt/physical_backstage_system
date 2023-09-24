@@ -41,7 +41,7 @@ export const updatePassword = (data: passwordParams, type: string) => {
  */
 export const updatePhoto = (data: photoParams, type: string) => {
   return hyRequest.post({
-    url: `/${type}/change-photo`,
+    url: `/${type}/confirm-photo`,
     data
   })
 }

@@ -76,12 +76,12 @@ const SearchForm: React.FC<searchType> = ({ setSearchInfo }) => {
               <>
                 <div className="input">
                   <Form.Item label="套餐名称" name="name" tooltip="商品套餐">
-                    <Input />
+                    <Input id="name" />
                   </Form.Item>
                 </div>
                 <div className="input">
                   <Form.Item label="套餐编号" name="code">
-                    <Input />
+                    <Input id="code" />
                   </Form.Item>
                 </div>
               </>
@@ -90,12 +90,12 @@ const SearchForm: React.FC<searchType> = ({ setSearchInfo }) => {
             <>
               <div className="input">
                 <Form.Item label="套餐名称" name="name" tooltip="商品套餐">
-                  <Input />
+                  <Input id="name" />
                 </Form.Item>
               </div>
               <div className="input">
                 <Form.Item label="套餐编号" name="code">
-                  <Input />
+                  <Input id="code" />
                 </Form.Item>
               </div>
               <div className="input">

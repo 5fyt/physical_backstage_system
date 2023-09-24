@@ -4,7 +4,6 @@ import { LoadingOutlined, PlusOutlined } from '@ant-design/icons'
 
 import type { UploadChangeParam } from 'antd/es/upload'
 import type { RcFile, UploadFile, UploadProps } from 'antd/es/upload/interface'
-import { updatePhoto } from '@/services/api/login'
 import { useAppDispatch } from '@/stores'
 import { updateAavatar } from '@/stores/module/login'
 interface ModalProps {
@@ -34,16 +33,23 @@ const LoadAvatar: React.FC<ModalProps> = (props: ModalProps) => {
   const dispatch = useAppDispatch()
   const [messageApi, contextHolder] = message.useMessage()
   const [path, setPath] = useState('')
+  const headers = {
+    token: localStorage.getItem('token') as string
+  }
   //将子组件上的方法暴露给父组件，类型于Vue中defineExpose({})
   useImperativeHandle(props.innerRef, () => ({
     showModal
   }))
 
   const handleOk = async () => {
-    dispatch(updateAavatar({ path })).then(() => {
-      messageApi.success('修改头像成功')
-      setVisible(false)
-      setImageUrl('')
+    dispatch(updateAavatar({ path })).then((res) => {
+      if (res.payload.code === 200) {
+        messageApi.success('修改头像成功')
+        setVisible(false)
+        setImageUrl('')
+      } else {
+        messageApi.error('服务器网络走丢了')
+      }
     })
   }
   const showModal = () => {
@@ -86,12 +92,17 @@ const LoadAvatar: React.FC<ModalProps> = (props: ModalProps) => {
           listType="picture-card"
           className="avatar-uploader"
           showUploadList={false}
-          action="http://127.0.0.1/file/upload-photo"
+          headers={headers}
+          action="http://127.0.0.1/admin/upload-photo"
           beforeUpload={beforeUpload}
           onChange={handleChange}
         >
           {imageUrl ? (
-            <img src={imageUrl} alt="avatar" style={{ width: '100%' }} />
+            <img
+              src={imageUrl}
+              alt="avatar"
+              style={{ width: '100%', height: '100%' }}
+            />
           ) : (
             uploadButton
           )}
