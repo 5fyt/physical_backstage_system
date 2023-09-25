@@ -26,7 +26,6 @@ import {
 } from '@ant-design/icons'
 import type { UploadChangeParam } from 'antd/es/upload'
 import type { RcFile, UploadFile, UploadProps } from 'antd/es/upload/interface'
-
 import { discountList } from '@/services/api/goods'
 
 interface ModalProps {
@@ -85,10 +84,8 @@ const AddGoods: React.FC<ModalProps> = (props: ModalProps) => {
   //获取打折列表
   const getDisList = async () => {
     try {
-      const {
-        data: { discounts }
-      } = await discountList()
-      const disOption = discounts.map((item: any) => {
+      const { data } = await discountList()
+      const disOption = data?.discounts.map((item: any) => {
         return { label: item.name, value: item.id }
       })
       setOptions(disOption)
@@ -132,6 +129,7 @@ const AddGoods: React.FC<ModalProps> = (props: ModalProps) => {
   //生成tag标签数组
   const enterTag = (e: any) => {
     const { value } = e.target
+
     setTags((pre) => [...pre, value])
   }
   const addProject = () => {
@@ -148,6 +146,7 @@ const AddGoods: React.FC<ModalProps> = (props: ModalProps) => {
     <>
       <Modal
         title="新增"
+
         open={open}
         width={750}
         footer={[
@@ -181,7 +180,7 @@ const AddGoods: React.FC<ModalProps> = (props: ModalProps) => {
             name="code"
             rules={[
               { required: true, message: '套餐编号不为空' },
-              { pattern: /^[0-9A_Z]{4,10}$/, message: '套餐编号格式错误' }
+              { pattern: /^[0-9A_Z]\d{4,10}$/, message: '套餐编号格式错误' }
             ]}
           >
             <Input></Input>
@@ -293,12 +292,16 @@ const AddGoods: React.FC<ModalProps> = (props: ModalProps) => {
                 <React.Fragment key={index}>
                   <Space
                     size={[0, 8]}
-                    style={{ overflow: tags.length > 0 ? '' : 'hidden' }}
+                    wrap
+                    style={{
+                      marginLeft: index === 0 ? '115px' : '',
+                      overflow: tags.length > 0 ? '' : 'hidden'
+                    }}
                   >
                     <Tag
                       color="success"
                       closable
-                      style={{ marginLeft: '115px', marginBottom: '5px' }}
+                      style={{ marginBottom: '5px' }}
                     >
                       {item}
                     </Tag>
