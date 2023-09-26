@@ -39,5 +39,11 @@
       ).ant-radio-button-wrapper:last-child {
       border-radius: 0;
     }
+    :where(.css-dev-only-do-not-override-18iikkb).ant-switch.ant-switch-checked {
+      background-color: #52c41a;
+    }
+    :where(.css-dev-only-do-not-override-18iikkb).ant-switch.ant-switch-checked:hover{
+      background-color: #52c41a;
+    }
   }
 }

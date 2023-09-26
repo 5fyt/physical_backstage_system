@@ -1,5 +1,6 @@
 import hyRequest from '..'
-import { Type, updateParams, addParams } from '../types/goods'
+import { Type, updateParams, addParams, statusParams } from '../types/goods'
+import { deleteParams } from '../types/user'
 
 /**
  * 搜索商品类型option
@@ -50,12 +51,18 @@ export const updateGoods = (data: updateParams<Type>) => {
     data
   })
 }
+export const changeStatus=(data:statusParams)=>{
+  return hyRequest.post({
+    url:'/goods/change-status',
+    data
+  })
+}
 /**
  *删除表格，批量删除或删除单个
  * @param data
  * @returns
  */
-export const deleteGoods = (data: string[]) => {
+export const deleteGoods = (data: deleteParams) => {
   return hyRequest.post({
     url: '/goods/delete',
     data

@@ -23,9 +23,9 @@ export type searchParams = {
   page: number
   size: number
   name?: string
-  code?:string
-  type?:number
-  status?:number
+  code?: string
+  type?: number
+  status?: number
 }
 export type addParams<T> = {
   name: string
@@ -42,4 +42,11 @@ export type addParams<T> = {
   laboratoryCheckup?: T[]
   medicalCheckup?: T[]
   otherCheckup?: T[]
+}
+export type deleteParams = {
+  ids: string[]
+}
+export type statusParams = {
+  id: string
+  status: number
 }
