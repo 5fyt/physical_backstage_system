@@ -36,6 +36,7 @@ interface ModalProps {
   showModal: () => void
 }
 const options = [
+  { label: '全部', value: 0 },
   { label: '已上架', value: 1 },
   { label: '已下架', value: 2 }
 ]
@@ -62,7 +63,7 @@ const TableList: React.FC<Iprop> = ({ searchInfo }) => {
 
   const dispatch = useAppDispatch()
   const { pathname } = useLocation()
-  const [value, setValue] = useState(1)
+  const [value, setValue] = useState(0)
   const [sz, setSz] = useState<SizeType>('middle')
   const showRef = useRef<ModalProps>(null)
   //list 传过来的值
@@ -89,10 +90,24 @@ const TableList: React.FC<Iprop> = ({ searchInfo }) => {
   //切换radio查询数据
   const onChangeHandle = ({ target: { value } }: RadioChangeEvent) => {
     setValue(value)
-    const data = {
-      status: value
+    if (value !== 0) {
+      const data = {
+        status: value
+      }
+      loadList({ ...data, ...searchInfo })
+    } else {
+      loadList(searchInfo)
     }
-    loadList({ ...data, ...searchInfo })
+  }
+  const refreshHandle = () => {
+    if (value !== 0) {
+      const data = {
+        status: value
+      }
+      loadList({ ...data, ...searchInfo })
+    } else {
+      loadList(searchInfo)
+    }
   }
   const addShow = () => {
     showRef.current?.showModal()
@@ -117,7 +132,7 @@ const TableList: React.FC<Iprop> = ({ searchInfo }) => {
             <div className="refresh">
               <ReloadOutlined
                 style={{ fontSize: '16px' }}
-                onClick={() => loadList()}
+                onClick={() => refreshHandle()}
               />
             </div>
             <div className="updateWidth">
@@ -162,7 +177,7 @@ const TableList: React.FC<Iprop> = ({ searchInfo }) => {
           sz={sz}
         ></List>
       </div>
-      <AddGoods innerRef={showRef} loadList={()=>loadList()}></AddGoods>
+      <AddGoods innerRef={showRef} loadList={() => loadList()}></AddGoods>
     </div>
   )
 }

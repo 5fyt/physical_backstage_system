@@ -124,9 +124,9 @@ const List: React.FC<Iprop> = ({ checkKeys, show, loadList, sz }) => {
           <>
             <Switch
               onClick={(value) => switchHandle(value, record)}
-             
-              checkedChildren={text == 1 ? '上架' : '下架'}
-              unCheckedChildren={text == 1 ? '下架' : '上架'}
+              checkedChildren="上架"
+              checked={text === 1 ? true : false}
+              unCheckedChildren="下架"
               defaultChecked
             />
           </>
@@ -194,6 +194,7 @@ const List: React.FC<Iprop> = ({ checkKeys, show, loadList, sz }) => {
   }
   //更改上架下架状态
   const switchHandle = async (value: boolean, record: any) => {
+    console.log(value)
     try {
       const { id } = record
       const data = {
@@ -201,6 +202,7 @@ const List: React.FC<Iprop> = ({ checkKeys, show, loadList, sz }) => {
         status: value ? 1 : 2
       }
       await changeStatus(data)
+      loadList()
     } catch (err) {
       console.log(err)
     }
