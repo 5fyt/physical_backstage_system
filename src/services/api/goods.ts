@@ -11,12 +11,21 @@ export const getTypes = () => {
   })
 }
 /**
+ * 搜索商套餐分类option
+ * @returns
+ */
+export const getSorts = () => {
+  return hyRequest.get({
+    url: '/goods/sort'
+  })
+}
+/**
  * 折扣列表
  * @returns
  */
-export const discountList=()=>{
+export const discountList = () => {
   return hyRequest.get({
-    url:'/discount/list',
+    url: '/discount/list'
   })
 }
 /**

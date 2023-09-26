@@ -12,13 +12,10 @@ export const transResults = (data: any) => {
   const result3 = transFn(data, type3)
   const result4 = transFn(data, type4)
   resultObj = {
-    departmentCheckup: result1,
-    ...(result1.length > 0 &&
-      result2.length > 0 && { laboratoryCheckup: result2 }),
-    ...(result1.length > 0 &&
-      result2.length > 0 &&
-      result3.length > 0 && { medicalCheckup: result3 }),
-    ...(result4.length > 0 && { otherCheckup: result4 })
+    ...(result1.length > 0 && { departmentCheckup: result1 }),
+    ...(result2.length > 0 && { laboratoryCheckup: result2 }),
+    ...(result3.length > 0 && { medicalCheckup: result3 }),
+    ...(result4.length > 0 && { medicalCheckup: result4 })
   }
 
   return resultObj

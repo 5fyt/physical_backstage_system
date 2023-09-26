@@ -1,7 +1,8 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { RootState } from '..'
-import { searchGoods } from '@/services/api/goods'
-import { searchParams } from '@/services/types/goods'
+import { addGoods, searchGoods } from '@/services/api/goods'
+import { Type, searchParams, addParams } from '@/services/types/goods'
+
 type DataType = {
   key: React.Key
   name: string
@@ -33,7 +34,13 @@ export const searchGoodsAsync = createAsyncThunk(
     return res
   }
 )
-
+export const createGoodsAsync = createAsyncThunk(
+  'createGoods',
+  async (data: addParams<Type>) => {
+    const res = await addGoods(data)
+    return res
+  }
+)
 export const goodsSlice = createSlice({
   name: 'goods',
   initialState,

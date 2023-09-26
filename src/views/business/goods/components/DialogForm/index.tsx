@@ -26,10 +26,14 @@ import {
 } from '@ant-design/icons'
 import type { UploadChangeParam } from 'antd/es/upload'
 import type { RcFile, UploadFile, UploadProps } from 'antd/es/upload/interface'
-import { discountList } from '@/services/api/goods'
+import { discountList, getSorts } from '@/services/api/goods'
+import { transResults } from '@/utils/transData'
+import { useAppDispatch } from '@/stores'
+import { createGoodsAsync } from '@/stores/module/goods'
 
 interface ModalProps {
   innerRef: Ref<{ showModal: () => void }>
+  loadList: () => void
 }
 const { TextArea } = Input
 
@@ -62,13 +66,14 @@ const beforeUpload = (file: RcFile) => {
 const AddGoods: React.FC<ModalProps> = (props: ModalProps) => {
   const [open, setOpen] = useState(false)
   const [options, setOptions] = useState([])
+  const [sortOp, setSortOp] = useState([])
   const [tags, setTags] = useState<string[]>([])
   const [item, setItem] = useState([{}])
   const [loading, setLoading] = useState(false)
   const formRef = useRef<any>()
   const [path, setPath] = useState('')
-
   const [imageUrl, setImageUrl] = useState<string>()
+  const dispatch = useAppDispatch()
   const headers = {
     token: localStorage.getItem('token') as string
   }
@@ -89,6 +94,18 @@ const AddGoods: React.FC<ModalProps> = (props: ModalProps) => {
         return { label: item.name, value: item.id }
       })
       setOptions(disOption)
+    } catch (err) {
+      console.error(err)
+    }
+  }
+  //获取套餐分类列表
+  const getSortList = async () => {
+    try {
+      const { data } = await getSorts()
+      const sortOption = data?.sorts.map((item: any) => {
+        return { label: item.name, value: item.sort }
+      })
+      setSortOp(sortOption)
     } catch (err) {
       console.error(err)
     }
@@ -119,17 +136,51 @@ const AddGoods: React.FC<ModalProps> = (props: ModalProps) => {
   const handleOk = () => {
     formRef.current?.validateFields().then((value: any) => {
       console.log(value)
+      const {
+        name,
+        code,
+        currentPrice,
+        originalPrice,
+        description,
+        discountId,
+        sort,
+        tag,
+        type,
+        ...otherValue
+      } = value
+      const other = transResults(otherValue)
+      const data = {
+        name,
+        code,
+        currentPrice,
+        originalPrice,
+        description,
+        discountId,
+        sort,
+        type,
+        image: path,
+        tag: tags,
+        ...other
+      }
+      dispatch(createGoodsAsync(data)).then((res) => {
+        if (res.payload.code === 200) {
+          message.success('添加成功')
+          props.loadList()
+          formRef.current?.resetFields()
+          setOpen(false)
+        }
+      })
     })
   }
   //取消弹窗
   const handleCancel = () => {
     setOpen(false)
+    formRef.current?.resetFields()
     setImageUrl('')
   }
   //生成tag标签数组
   const enterTag = (e: any) => {
     const { value } = e.target
-
     setTags((pre) => [...pre, value])
   }
   const addProject = () => {
@@ -141,14 +192,15 @@ const AddGoods: React.FC<ModalProps> = (props: ModalProps) => {
   }
   useEffect(() => {
     getDisList()
+    getSortList()
   }, [])
   return (
     <>
       <Modal
         title="新增"
-
         open={open}
         width={750}
+        onCancel={handleCancel}
         footer={[
           <Button key="add" onClick={addProject}>
             添加项目
@@ -165,6 +217,7 @@ const AddGoods: React.FC<ModalProps> = (props: ModalProps) => {
           labelCol={{ span: 4 }}
           wrapperCol={{ span: 16 }}
           layout="horizontal"
+          autoComplete="off"
           ref={formRef}
           style={{ minWidth: 600 }}
         >
@@ -314,13 +367,7 @@ const AddGoods: React.FC<ModalProps> = (props: ModalProps) => {
             <Select
               placeholder="选择展示区"
               style={{ width: '50%' }}
-              options={[
-                { label: '活动专区', value: 1 },
-                { label: '热卖套餐', value: 2 },
-                { label: '新品推荐', value: 3 },
-                { label: '孝敬父母', value: 4 },
-                { label: '白领精英', value: 5 }
-              ]}
+              options={sortOp}
             ></Select>
           </Form.Item>
 
@@ -344,12 +391,12 @@ const AddGoods: React.FC<ModalProps> = (props: ModalProps) => {
                     </Col>
                     <Col span={6}>
                       <Form.Item name={index + '_name'}>
-                        <Input></Input>
+                        <Input placeholder="体检项目"></Input>
                       </Form.Item>
                     </Col>
                     <Col span={11}>
                       <Form.Item name={index + '_description'}>
-                        <Input></Input>
+                        <Input placeholder="体检内容"></Input>
                       </Form.Item>
                     </Col>
                     <Col span={1}>
