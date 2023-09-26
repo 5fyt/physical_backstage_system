@@ -69,9 +69,6 @@ const Login: React.FC = () => {
   }
   return (
     <>
-      {LoginState === 'error' && (
-        <LoginMessage content={'错误的用户名和密码'} />
-      )}
       <div className={Styles.page}>
         <div className={Styles.container}>
           <div className={Styles.left}>
@@ -80,6 +77,9 @@ const Login: React.FC = () => {
           </div>
           <div className={Styles.right}>
             {contextHolder}
+            {LoginState === 'error' && (
+              <LoginMessage content={'错误的用户名和密码'} />
+            )}
             <LoginForm
               subTitle={
                 <div className={Styles.title_container}>

@@ -18,12 +18,14 @@ type DataType = {
 interface stateType<T> {
   page: number
   size: number
+ 
   totalCount: number
   results: T[]
 }
 const initialState: stateType<DataType> = {
   page: 1,
   size: 10,
+
   totalCount: 0,
   results: []
 }
@@ -48,7 +50,8 @@ export const goodsSlice = createSlice({
     updatePage: (state, { payload }) => {
       state.page = payload.current
       state.size = payload.pageSize
-    }
+    },
+
   },
   extraReducers: (builder) => {
     builder.addCase(searchGoodsAsync.fulfilled, (state, { payload }) => {

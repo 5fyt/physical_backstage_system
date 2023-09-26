@@ -12,7 +12,12 @@ import type { MenuProps } from 'antd'
 import Content from './components/Setting'
 import List from './components/List'
 import { useAppDispatch, useAppSelector } from '@/stores'
-import { pageIndex, pageSize, searchGoodsAsync } from '@/stores/module/goods'
+import {
+  pageIndex,
+  pageSize,
+  searchGoodsAsync,
+
+} from '@/stores/module/goods'
 import { SizeType } from 'antd/es/config-provider/SizeContext'
 import AddGoods from '../DialogForm/index'
 import { useLocation } from 'react-router-dom'
@@ -63,9 +68,10 @@ const TableList: React.FC<Iprop> = ({ searchInfo }) => {
 
   const dispatch = useAppDispatch()
   const { pathname } = useLocation()
-  const [value, setValue] = useState(0)
-  const [sz, setSz] = useState<SizeType>('middle')
   const showRef = useRef<ModalProps>(null)
+  const [radioValue, setRadioValue] = useState(0)
+  const [sz, setSz] = useState<SizeType>('middle')
+  const [loadInfo, setLoadInfo] = useState(null)
   //list 传过来的值
   const [checkKeys, setCheckKeys] = useState<string[]>([])
   const [show, setShow] = useState(true)
@@ -86,10 +92,14 @@ const TableList: React.FC<Iprop> = ({ searchInfo }) => {
   useEffect(() => {
     loadList(searchInfo)
   }, [searchInfo, pathname])
-
+  const emitLoadList = (value: any) => {
+    console.log(value)
+    loadList(value)
+  }
   //切换radio查询数据
   const onChangeHandle = ({ target: { value } }: RadioChangeEvent) => {
-    setValue(value)
+    setRadioValue(value)
+    localStorage.setItem('status',value)
     if (value !== 0) {
       const data = {
         status: value
@@ -100,9 +110,9 @@ const TableList: React.FC<Iprop> = ({ searchInfo }) => {
     }
   }
   const refreshHandle = () => {
-    if (value !== 0) {
+    if (radioValue !== 0) {
       const data = {
-        status: value
+        status: radioValue
       }
       loadList({ ...data, ...searchInfo })
     } else {
@@ -121,7 +131,7 @@ const TableList: React.FC<Iprop> = ({ searchInfo }) => {
             <Radio.Group
               options={options}
               onChange={onChangeHandle}
-              value={value}
+              value={radioValue}
               optionType="button"
             />
             <div className="add">
@@ -173,7 +183,7 @@ const TableList: React.FC<Iprop> = ({ searchInfo }) => {
         <List
           checkKeys={checkKeys}
           show={show}
-          loadList={(value) => loadList(value)}
+          loadList={(value) => emitLoadList(value)}
           sz={sz}
         ></List>
       </div>

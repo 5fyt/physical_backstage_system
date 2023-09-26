@@ -170,6 +170,7 @@ const List: React.FC<Iprop> = ({ checkKeys, show, loadList, sz }) => {
   const page = useAppSelector(pageIndex)
   const total = useAppSelector(totalCount)
   const data = useAppSelector(results)
+
   const dispatch = useAppDispatch()
   //表格与设置按钮交互
   useEffect(() => {
@@ -202,7 +203,14 @@ const List: React.FC<Iprop> = ({ checkKeys, show, loadList, sz }) => {
         status: value ? 1 : 2
       }
       await changeStatus(data)
-      loadList()
+      const status = Number(localStorage.getItem('status'))
+      console.log(status)
+
+      if (status !== 0) {
+        loadList({ status: status })
+      } else {
+        loadList()
+      }
     } catch (err) {
       console.log(err)
     }
