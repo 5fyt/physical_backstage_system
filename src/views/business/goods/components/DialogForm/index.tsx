@@ -30,7 +30,6 @@ import { discountList, getGoodsInfo, getSorts } from '@/services/api/goods'
 import { transReserve, transResults } from '@/utils/transData'
 import { useAppDispatch } from '@/stores'
 import { createGoodsAsync, updateGoodsAsync } from '@/stores/module/goods'
-import { current } from '@reduxjs/toolkit'
 
 interface ModalProps {
   innerRef: Ref<{ showModal: (value?: any) => void }>
@@ -66,7 +65,7 @@ const beforeUpload = (file: RcFile) => {
 }
 const AddGoods: React.FC<ModalProps> = (props: ModalProps) => {
   const [open, setOpen] = useState(false)
-  const [title, setTitle] = useState('新增')
+
   const [options, setOptions] = useState([])
   const [sortOp, setSortOp] = useState([])
   const [tags, setTags] = useState<string[]>([])
@@ -169,7 +168,7 @@ const AddGoods: React.FC<ModalProps> = (props: ModalProps) => {
       for (let i = 0; i < num - 1; i++) {
         setItem((pre) => [...pre, {}])
       }
-      setTitle('修改')
+
     } else {
       idRef.current = ''
     }

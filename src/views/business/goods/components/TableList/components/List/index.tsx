@@ -146,18 +146,23 @@ const List: React.FC<Iprop> = ({ checkKeys, show, loadList, sz, addShow }) => {
           >
             预览
           </span>
-          <span
-            style={{ color: '#1890ff', cursor: 'pointer' }}
+          <Button
+
             onClick={() => updateData(record)}
+            disabled={record.status === 2 ? false : true}
+            type="link"
+            ghost
           >
             修改
-          </span>
-          <span
-            style={{ color: '#ff4d4f', cursor: 'pointer' }}
+          </Button>
+          <Button
+            
             onClick={() => deleteData(record)}
+            type="link"
+            danger
           >
             删除
-          </span>
+          </Button>
         </Space>
       )
     }
