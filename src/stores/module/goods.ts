@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { RootState } from '..'
-import { addGoods, searchGoods } from '@/services/api/goods'
-import { Type, searchParams, addParams } from '@/services/types/goods'
+import { addGoods, searchGoods, updateGoods } from '@/services/api/goods'
+import { Type, searchParams, addParams, updateParams } from '@/services/types/goods'
 
 type DataType = {
   key: React.Key
@@ -18,7 +18,7 @@ type DataType = {
 interface stateType<T> {
   page: number
   size: number
- 
+
   totalCount: number
   results: T[]
 }
@@ -40,6 +40,13 @@ export const createGoodsAsync = createAsyncThunk(
   'createGoods',
   async (data: addParams<Type>) => {
     const res = await addGoods(data)
+    return res
+  }
+)
+export const updateGoodsAsync = createAsyncThunk(
+  'updateGoods',
+  async (data: updateParams<Type>) => {
+    const res = await updateGoods(data)
     return res
   }
 )

@@ -3,7 +3,7 @@ export type Type = {
   description: string
 }
 export type updateParams<T> = {
-  id: number
+  id: string
   name?: string
   code?: string
   description?: string
@@ -14,10 +14,10 @@ export type updateParams<T> = {
   type?: number
   tag: string[]
   sort?: number
-  departmentCheckup: T[]
-  laboratoryCheckup: T[]
-  medicalCheckup: T[]
-  otherCheckup: T[]
+  departmentCheckup?: T[]
+  laboratoryCheckup?: T[]
+  medicalCheckup?: T[]
+  otherCheckup?: T[]
 }
 export type searchParams = {
   page: number

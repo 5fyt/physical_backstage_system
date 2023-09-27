@@ -58,3 +58,54 @@ const transFn = (data: any, type: string[]) => {
 
   return result
 }
+export const transReserve = (data: any) => {
+  let num: number = 0
+  const {
+    departmentCheckup,
+    laboratoryCheckup,
+    medicalCheckup,
+    otherCheckup,
+    ...other
+  } = data
+  let arr: any = []
+  //department:[{name:'ss',description:'dd'},{name:'bb',description:'ccc'}]==>
+  //[{name:'ss',description:'dd',type:1},{name:'bb',description:'ccc',type:1}]
+  if (departmentCheckup?.length > 0) {
+    num += departmentCheckup.length
+    arr = departmentCheckup.map((item: any) => {
+      return { name: item.name, description: item.description, type: 1 }
+    })
+  }
+  if (laboratoryCheckup?.length > 0) {
+    num += laboratoryCheckup.length
+    const newArr = laboratoryCheckup.map((item: any) => {
+      return { name: item.name, description: item.description, type: 2 }
+    })
+    arr = [...arr, ...newArr]
+  }
+  if (medicalCheckup?.length > 0) {
+    num += medicalCheckup.length
+    const newArr = medicalCheckup.map((item: any) => {
+      return { name: item.name, description: item.description, type: 3 }
+    })
+    arr = [...arr, ...newArr]
+  }
+  if (otherCheckup?.length > 0) {
+    num += otherCheckup.length
+    const newArr = otherCheckup.map((item: any) => {
+      return { name: item.name, description: item.description, type: 4 }
+    })
+    arr = [...arr, ...newArr]
+  }
+  arr = arr.map((item: any, index: any) => {
+    return {
+      [index + '_description']: item.description,
+      [index + '_name']: item.name,
+      [index + '_type']: item.type
+    }
+  })
+  const result = arr.reduce((prev: any, next: any) => {
+    return { ...prev, ...next }
+  }, {})
+  return { result, num }
+}

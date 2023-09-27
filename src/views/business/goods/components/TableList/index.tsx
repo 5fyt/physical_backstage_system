@@ -38,7 +38,7 @@ type Iprop = {
   }
 }
 interface ModalProps {
-  showModal: () => void
+  showModal: (value?:any) => void
 }
 const options = [
   { label: '全部', value: 0 },
@@ -71,7 +71,6 @@ const TableList: React.FC<Iprop> = ({ searchInfo }) => {
   const showRef = useRef<ModalProps>(null)
   const [radioValue, setRadioValue] = useState(0)
   const [sz, setSz] = useState<SizeType>('middle')
-  const [loadInfo, setLoadInfo] = useState(null)
   //list 传过来的值
   const [checkKeys, setCheckKeys] = useState<string[]>([])
   const [show, setShow] = useState(true)
@@ -109,6 +108,7 @@ const TableList: React.FC<Iprop> = ({ searchInfo }) => {
       loadList(searchInfo)
     }
   }
+  //刷新表格
   const refreshHandle = () => {
     if (radioValue !== 0) {
       const data = {
@@ -119,8 +119,8 @@ const TableList: React.FC<Iprop> = ({ searchInfo }) => {
       loadList(searchInfo)
     }
   }
-  const addShow = () => {
-    showRef.current?.showModal()
+  const addShow = (value:any) => {
+    showRef.current?.showModal(value)
   }
   return (
     <div className={Style.table}>
@@ -183,6 +183,7 @@ const TableList: React.FC<Iprop> = ({ searchInfo }) => {
         <List
           checkKeys={checkKeys}
           show={show}
+          addShow={(value)=>addShow(value)}
           loadList={(value) => emitLoadList(value)}
           sz={sz}
         ></List>

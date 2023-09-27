@@ -26,13 +26,14 @@ import {
 } from '@ant-design/icons'
 import type { UploadChangeParam } from 'antd/es/upload'
 import type { RcFile, UploadFile, UploadProps } from 'antd/es/upload/interface'
-import { discountList, getSorts } from '@/services/api/goods'
-import { transResults } from '@/utils/transData'
+import { discountList, getGoodsInfo, getSorts } from '@/services/api/goods'
+import { transReserve, transResults } from '@/utils/transData'
 import { useAppDispatch } from '@/stores'
-import { createGoodsAsync } from '@/stores/module/goods'
+import { createGoodsAsync, updateGoodsAsync } from '@/stores/module/goods'
+import { current } from '@reduxjs/toolkit'
 
 interface ModalProps {
-  innerRef: Ref<{ showModal: () => void }>
+  innerRef: Ref<{ showModal: (value?: any) => void }>
   loadList: () => void
 }
 const { TextArea } = Input
@@ -65,14 +66,17 @@ const beforeUpload = (file: RcFile) => {
 }
 const AddGoods: React.FC<ModalProps> = (props: ModalProps) => {
   const [open, setOpen] = useState(false)
+  const [title, setTitle] = useState('新增')
   const [options, setOptions] = useState([])
   const [sortOp, setSortOp] = useState([])
   const [tags, setTags] = useState<string[]>([])
   const [item, setItem] = useState([{}])
   const [loading, setLoading] = useState(false)
-  const formRef = useRef<any>()
   const [path, setPath] = useState('')
   const [imageUrl, setImageUrl] = useState<string>()
+  const formRef = useRef<any>()
+  const idRef = useRef<string>('')
+  const [form] = Form.useForm()
   const dispatch = useAppDispatch()
   const headers = {
     token: localStorage.getItem('token') as string
@@ -129,7 +133,46 @@ const AddGoods: React.FC<ModalProps> = (props: ModalProps) => {
     }
   }
   //打开弹出层
-  const showModal = () => {
+  const showModal = async (value: any) => {
+    if (typeof value === 'string') {
+      console.log(value)
+      idRef.current = value
+      const { data } = await getGoodsInfo(value)
+      const {
+        image,
+        tag,
+        name,
+        code,
+        description,
+        originalPrice,
+        currentPrice,
+        discountId,
+        sort,
+        type,
+        ...other
+      } = data
+      const { result, num } = transReserve(other)
+      form.setFieldsValue({
+        name,
+        code,
+        description,
+        originalPrice,
+        currentPrice,
+        discountId,
+        type,
+        sort,
+        ...result
+      })
+      setImageUrl(image)
+      setPath(image)
+      setTags(tag)
+      for (let i = 0; i < num - 1; i++) {
+        setItem((pre) => [...pre, {}])
+      }
+      setTitle('修改')
+    } else {
+      idRef.current = ''
+    }
     setOpen(true)
   }
   //提交表单
@@ -149,27 +192,55 @@ const AddGoods: React.FC<ModalProps> = (props: ModalProps) => {
         ...otherValue
       } = value
       const other = transResults(otherValue)
-      const data = {
-        name,
-        code,
-        currentPrice,
-        originalPrice,
-        description,
-        discountId,
-        sort,
-        type,
-        image: path,
-        tag: tags,
-        ...other
-      }
-      dispatch(createGoodsAsync(data)).then((res) => {
-        if (res.payload.code === 200) {
-          message.success('添加成功')
-          props.loadList()
-          formRef.current?.resetFields()
-          setOpen(false)
+
+      if (idRef.current) {
+        const data = {
+          id: idRef.current,
+          name,
+          code,
+          currentPrice,
+          originalPrice,
+          description,
+          discountId,
+          sort,
+          type,
+          image: path,
+          tag: tags,
+          ...other
         }
-      })
+        dispatch(updateGoodsAsync(data)).then((res) => {
+          if (res.payload.code === 200) {
+            message.success('修改成功')
+            props.loadList()
+            formRef.current?.resetFields()
+            setOpen(false)
+          } else {
+            message.error(res.payload.message)
+          }
+        })
+      } else {
+        const data = {
+          name,
+          code,
+          currentPrice,
+          originalPrice,
+          description,
+          discountId,
+          sort,
+          type,
+          image: path,
+          tag: tags,
+          ...other
+        }
+        dispatch(createGoodsAsync(data)).then((res) => {
+          if (res.payload.code === 200) {
+            message.success('添加成功')
+            props.loadList()
+            formRef.current?.resetFields()
+            setOpen(false)
+          }
+        })
+      }
     })
   }
   //取消弹窗
@@ -187,19 +258,23 @@ const AddGoods: React.FC<ModalProps> = (props: ModalProps) => {
     setItem((pre) => [...pre, {}])
   }
   const deleteProject = (id: number) => {
-    const newItem = item.filter((item, index) => id !== index)
-    setItem(newItem)
+    if (item.length !== 1) {
+      const newItem = item.splice(id, 1)
+      setItem(newItem)
+    }
   }
   useEffect(() => {
     getDisList()
     getSortList()
   }, [])
+
   return (
     <>
       <Modal
-        title="新增"
+        title={idRef.current ? '修改' : '新增'}
         open={open}
         width={750}
+        forceRender
         onCancel={handleCancel}
         footer={[
           <Button key="add" onClick={addProject}>
@@ -219,6 +294,7 @@ const AddGoods: React.FC<ModalProps> = (props: ModalProps) => {
           layout="horizontal"
           autoComplete="off"
           ref={formRef}
+          form={form}
           style={{ minWidth: 600 }}
         >
           <Form.Item
@@ -233,7 +309,7 @@ const AddGoods: React.FC<ModalProps> = (props: ModalProps) => {
             name="code"
             rules={[
               { required: true, message: '套餐编号不为空' },
-              { pattern: /^[0-9A_Z]\d{4,10}$/, message: '套餐编号格式错误' }
+              { pattern:/^[0-9A-Z]{6,12}$/, message: '套餐编号格式错误' }
             ]}
           >
             <Input></Input>
@@ -279,6 +355,7 @@ const AddGoods: React.FC<ModalProps> = (props: ModalProps) => {
           <Form.Item label="折扣列表" name="discountId">
             <Select
               options={options}
+
               placeholder="选择折扣信息"
               style={{ width: '68%' }}
             ></Select>
@@ -401,7 +478,7 @@ const AddGoods: React.FC<ModalProps> = (props: ModalProps) => {
                     </Col>
                     <Col span={1}>
                       <span>
-                        {index !== 0 && (
+                        {
                           <DeleteOutlined
                             onClick={() => deleteProject(index)}
                             style={{
@@ -410,7 +487,7 @@ const AddGoods: React.FC<ModalProps> = (props: ModalProps) => {
                               marginTop: '7px'
                             }}
                           />
-                        )}
+                        }
                       </span>
                     </Col>
                   </React.Fragment>

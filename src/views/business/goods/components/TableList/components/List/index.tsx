@@ -23,10 +23,11 @@ type Iprop = {
   checkKeys: any[]
   show: boolean
   sz: SizeType
+  addShow: (value?: any) => void
   loadList: (value?: any) => void
 }
 
-const List: React.FC<Iprop> = ({ checkKeys, show, loadList, sz }) => {
+const List: React.FC<Iprop> = ({ checkKeys, show, loadList, sz, addShow }) => {
   const defaultColumns: ColumnsType<DataType> = [
     {
       title: '套餐名字',
@@ -191,11 +192,11 @@ const List: React.FC<Iprop> = ({ checkKeys, show, loadList, sz }) => {
     console.log(record)
   }
   const updateData = (record: any) => {
-    console.log(record)
+    const { id } = record
+    addShow(id)
   }
   //更改上架下架状态
   const switchHandle = async (value: boolean, record: any) => {
-    console.log(value)
     try {
       const { id } = record
       const data = {
@@ -204,8 +205,6 @@ const List: React.FC<Iprop> = ({ checkKeys, show, loadList, sz }) => {
       }
       await changeStatus(data)
       const status = Number(localStorage.getItem('status'))
-      console.log(status)
-
       if (status !== 0) {
         loadList({ status: status })
       } else {

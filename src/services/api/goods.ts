@@ -30,6 +30,16 @@ export const discountList = () => {
   })
 }
 /**
+ * 获取套餐详细数据
+ * @param id
+ * @returns
+ */
+export const getGoodsInfo = (id: string) => {
+  return hyRequest.get({
+    url: `/goods/${id}`
+  })
+}
+/**
  * 搜索商品数据
  * @param data 默认从第一页开始，页数十条
  * @returns
@@ -51,9 +61,14 @@ export const updateGoods = (data: updateParams<Type>) => {
     data
   })
 }
-export const changeStatus=(data:statusParams)=>{
+/**
+ * 更新商品上架状态
+ * @param data
+ * @returns
+ */
+export const changeStatus = (data: statusParams) => {
   return hyRequest.post({
-    url:'/goods/change-status',
+    url: '/goods/change-status',
     data
   })
 }
