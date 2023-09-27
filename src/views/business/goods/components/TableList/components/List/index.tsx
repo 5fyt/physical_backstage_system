@@ -3,10 +3,16 @@ import { Table, Space, Switch, Button, message } from 'antd'
 import type { ColumnsType, TableProps } from 'antd/es/table'
 import Style from '../styles/list.module.scss'
 import { useAppDispatch, useAppSelector } from '@/stores'
-import { pageIndex, pageSize, updatePage } from '@/stores/module/goods'
+import {
+  pageIndex,
+  pageSize,
+  saveRecord,
+  updatePage
+} from '@/stores/module/goods'
 import { results, totalCount } from '@/stores/module/goods'
 import { SizeType } from 'antd/es/config-provider/SizeContext'
 import { changeStatus, deleteGoods } from '@/services/api/goods'
+import UploadExcel from '../../../UploadExcel'
 interface DataType {
   key: React.Key
   name: string
@@ -26,8 +32,11 @@ type Iprop = {
   addShow: (value?: any) => void
   loadList: (value?: any) => void
 }
-
+interface ModalProps {
+  showModal: () => void
+}
 const List: React.FC<Iprop> = ({ checkKeys, show, loadList, sz, addShow }) => {
+
   const defaultColumns: ColumnsType<DataType> = [
     {
       title: '套餐名字',
@@ -98,10 +107,10 @@ const List: React.FC<Iprop> = ({ checkKeys, show, loadList, sz, addShow }) => {
       key: '8',
       title: '体检内容',
       dataIndex: 'hasExcel',
-      render: (text) => {
+      render: (text, record) => {
         return (
           <>
-            <span>
+            <span onClick={() => showFn(record)}>
               {text ? (
                 <Button type="primary" ghost>
                   有文档
@@ -112,6 +121,10 @@ const List: React.FC<Iprop> = ({ checkKeys, show, loadList, sz, addShow }) => {
                 </Button>
               )}
             </span>
+            <UploadExcel
+              innerRef={loadRef}
+              loadList={() => loadList}
+            ></UploadExcel>
           </>
         )
       }
@@ -147,20 +160,13 @@ const List: React.FC<Iprop> = ({ checkKeys, show, loadList, sz, addShow }) => {
             预览
           </span>
           <Button
-
             onClick={() => updateData(record)}
             disabled={record.status === 2 ? false : true}
             type="link"
-            ghost
           >
             修改
           </Button>
-          <Button
-            
-            onClick={() => deleteData(record)}
-            type="link"
-            danger
-          >
+          <Button onClick={() => deleteData(record)} type="link" danger>
             删除
           </Button>
         </Space>
@@ -176,8 +182,14 @@ const List: React.FC<Iprop> = ({ checkKeys, show, loadList, sz, addShow }) => {
   const page = useAppSelector(pageIndex)
   const total = useAppSelector(totalCount)
   const data = useAppSelector(results)
-
+  const loadRef = useRef<ModalProps>(null)
   const dispatch = useAppDispatch()
+
+
+  const showFn = (value: any) => {
+    dispatch(saveRecord(value))
+    loadRef.current?.showModal()
+  }
   //表格与设置按钮交互
   useEffect(() => {
     if (checkKeys.length === 0 && show) {

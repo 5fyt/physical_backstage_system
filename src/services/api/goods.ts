@@ -94,3 +94,24 @@ export const addGoods = (data: addParams<Type>) => {
     data
   })
 }
+/**
+ * 上传excel文档
+ * @param data  file,id
+ * @returns
+ */
+export const uploadExl = (data: any) => {
+  return hyRequest.post({
+    url: '/goods/upload-excel',
+    data
+  })
+}
+/**
+ * 获取exeel文档url
+ * @param id
+ * @returns
+ */
+export const getExUrl = (id: string) => {
+  return hyRequest.get({
+    url: `/goods/excel-url/${id}`
+  })
+}
