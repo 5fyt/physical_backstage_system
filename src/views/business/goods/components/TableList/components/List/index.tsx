@@ -6,7 +6,7 @@ import { useAppDispatch, useAppSelector } from '@/stores'
 import {
   pageIndex,
   pageSize,
-  saveRecord,
+
   updatePage
 } from '@/stores/module/goods'
 import { results, totalCount } from '@/stores/module/goods'
@@ -33,10 +33,9 @@ type Iprop = {
   loadList: (value?: any) => void
 }
 interface ModalProps {
-  showModal: () => void
+  showModal: (value: any) => void
 }
 const List: React.FC<Iprop> = ({ checkKeys, show, loadList, sz, addShow }) => {
-
   const defaultColumns: ColumnsType<DataType> = [
     {
       title: '套餐名字',
@@ -123,7 +122,7 @@ const List: React.FC<Iprop> = ({ checkKeys, show, loadList, sz, addShow }) => {
             </span>
             <UploadExcel
               innerRef={loadRef}
-              loadList={() => loadList}
+              loadList={() => loadList()}
             ></UploadExcel>
           </>
         )
@@ -185,10 +184,8 @@ const List: React.FC<Iprop> = ({ checkKeys, show, loadList, sz, addShow }) => {
   const loadRef = useRef<ModalProps>(null)
   const dispatch = useAppDispatch()
 
-
   const showFn = (value: any) => {
-    dispatch(saveRecord(value))
-    loadRef.current?.showModal()
+    loadRef.current?.showModal(value)
   }
   //表格与设置按钮交互
   useEffect(() => {
