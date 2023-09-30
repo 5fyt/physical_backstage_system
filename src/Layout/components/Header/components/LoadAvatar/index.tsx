@@ -6,6 +6,8 @@ import type { UploadChangeParam } from 'antd/es/upload'
 import type { RcFile, UploadFile, UploadProps } from 'antd/es/upload/interface'
 import { useAppDispatch } from '@/stores'
 import { updateAavatar } from '@/stores/module/login'
+import axios from 'axios'
+import { loadPhoto } from '@/services/api/login'
 interface ModalProps {
   innerRef: Ref<{ showModal: () => void }>
 }
@@ -30,11 +32,13 @@ const LoadAvatar: React.FC<ModalProps> = (props: ModalProps) => {
   const [visible, setVisible] = useState(false)
   const [loading, setLoading] = useState(false)
   const [imageUrl, setImageUrl] = useState<string>()
+
   const dispatch = useAppDispatch()
   const [messageApi, contextHolder] = message.useMessage()
   const [path, setPath] = useState('')
   const headers = {
-    token: localStorage.getItem('token') as string
+    token: localStorage.getItem('token') as string,
+    'Content-Type': 'application/x-www-form-urlencoded'
   }
   //将子组件上的方法暴露给父组件，类型于Vue中defineExpose({})
   useImperativeHandle(props.innerRef, () => ({
@@ -63,17 +67,20 @@ const LoadAvatar: React.FC<ModalProps> = (props: ModalProps) => {
     info: UploadChangeParam<UploadFile>
   ) => {
     if (info.file.status === 'uploading') {
-      setLoading(true)
-      return
-    }
-    if (info.file.status === 'done') {
-      // Get this url from response in real world.
       getBase64(info.file.originFileObj as RcFile, (url) => {
         setLoading(false)
         setImageUrl(url)
       })
-      const { data } = info.file.response
-      setPath(data)
+    }
+  }
+  const uploadFile = async (file: any) => {
+    const formData = new FormData()
+    console.log(formData)
+    formData.append('suffix', 'jpg')
+    const type = localStorage.getItem('type') as string
+    const { code, data } = await loadPhoto(formData, type)
+    if (code === 200) {
+      setPath(data.path)
     }
   }
 
@@ -88,14 +95,12 @@ const LoadAvatar: React.FC<ModalProps> = (props: ModalProps) => {
       {contextHolder}
       <Modal title="上传头像" open={visible} onOk={handleOk} onCancel={cancel}>
         <Upload
-          name="file"
           listType="picture-card"
-          className="avatar-uploader"
           showUploadList={false}
           headers={headers}
-          action="http://127.0.0.1/admin/upload-photo"
-          beforeUpload={beforeUpload}
           onChange={handleChange}
+          beforeUpload={beforeUpload}
+          customRequest={uploadFile}
         >
           {imageUrl ? (
             <img

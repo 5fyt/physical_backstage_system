@@ -41,7 +41,19 @@ export const updatePassword = (data: passwordParams, type: string) => {
  */
 export const updatePhoto = (data: photoParams, type: string) => {
   return hyRequest.post({
-    url: `/${type}/confirm-photo`,
+    url: `/${type}/update-photo`,
+    data
+  })
+}
+/**
+ * 上传头像
+ * @param data formData 表单数据
+ * @param type
+ * @returns
+ */
+export const loadPhoto = (data: any, type: string) => {
+  return hyRequest.post({
+    url: `${type}/apply-upload-photo`,
     data
   })
 }

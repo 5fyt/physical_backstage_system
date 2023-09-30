@@ -19,8 +19,9 @@ class HYRequest {
         // console.log('全局请求成功拦截')
         const token = localStorage.getItem('token')
         if (token) {
-          config.headers.token=token
+          config.headers.token = token
         }
+        config.headers['Content-Type'] = 'application/x-www-form-urlencoded'
         return config
       },
       (err) => {
