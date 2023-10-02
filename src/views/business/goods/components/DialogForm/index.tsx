@@ -24,9 +24,15 @@ import {
   LoadingOutlined,
   DeleteOutlined
 } from '@ant-design/icons'
+import axios from 'axios'
 import type { UploadChangeParam } from 'antd/es/upload'
 import type { RcFile, UploadFile, UploadProps } from 'antd/es/upload/interface'
-import { discountList, getGoodsInfo, getSorts } from '@/services/api/goods'
+import {
+  discountList,
+  getGoodsInfo,
+  getSorts,
+  loadPhoto
+} from '@/services/api/goods'
 import { transReserve, transResults } from '@/utils/transData'
 import { useAppDispatch } from '@/stores'
 import { createGoodsAsync, updateGoodsAsync } from '@/stores/module/goods'
@@ -49,23 +55,9 @@ const getBase64 = (img: RcFile, callback: (url: string) => void) => {
   reader.readAsDataURL(img)
 }
 
-const beforeUpload = (file: RcFile) => {
-  const isJpgOrPng =
-    file.type === 'image/jpeg' ||
-    file.type === 'image/png' ||
-    file.type === 'image/webp'
-  if (!isJpgOrPng) {
-    message.error('你只能上传jepg,png,webp格式的图片!')
-  }
-  const isLt2M = file.size / 1024 / 1024 < 2
-  if (!isLt2M) {
-    message.error('图片大小不能超过2M')
-  }
-  return isJpgOrPng && isLt2M
-}
 const AddGoods: React.FC<ModalProps> = (props: ModalProps) => {
   const [open, setOpen] = useState(false)
-
+  const [suffix, setSuffix] = useState('')
   const [options, setOptions] = useState([])
   const [sortOp, setSortOp] = useState([])
   const [tags, setTags] = useState<string[]>([])
@@ -75,6 +67,7 @@ const AddGoods: React.FC<ModalProps> = (props: ModalProps) => {
   const [imageUrl, setImageUrl] = useState<string>()
   const formRef = useRef<any>()
   const idRef = useRef<string>('')
+  const imageFile=useRef<any>()
   const [form] = Form.useForm()
   const dispatch = useAppDispatch()
   const headers = {
@@ -113,22 +106,43 @@ const AddGoods: React.FC<ModalProps> = (props: ModalProps) => {
       console.error(err)
     }
   }
+  const beforeUpload = (file: RcFile) => {
+    const isJpgOrPng =
+      file.type === 'image/jpeg' ||
+      file.type === 'image/png' ||
+      file.type === 'image/webp'
+    const type = file.type.split('/')[1]
+    setSuffix(type)
+    if (!isJpgOrPng) {
+      message.error('你只能上传jepg,png,webp格式的图片!')
+    }
+    const isLt2M = file.size / 1024 / 1024 < 2
+    if (!isLt2M) {
+      message.error('图片大小不能超过2M')
+    }
+    return isJpgOrPng && isLt2M
+  }
   //上传商品更改回调
   const handleChange: UploadProps['onChange'] = (
     info: UploadChangeParam<UploadFile>
   ) => {
     if (info.file.status === 'uploading') {
-      setLoading(true)
-      return
-    }
-    if (info.file.status === 'done') {
-      // Get this url from response in real world.
       getBase64(info.file.originFileObj as RcFile, (url) => {
         setLoading(false)
+        imageFile.current=info.file.originFileObj
         setImageUrl(url)
       })
-      const { data } = info.file.response
-      setPath(data)
+    }
+  }
+  const uploadFile = async (file: any) => {
+    const dataObj = {
+      suffix
+    }
+    const { code, data } = await loadPhoto(dataObj)
+    const url = data?.url
+    axios.put(url, imageFile.current)
+    if (code === 200) {
+      setPath(data.path)
     }
   }
   //打开弹出层
@@ -168,7 +182,6 @@ const AddGoods: React.FC<ModalProps> = (props: ModalProps) => {
       for (let i = 0; i < num - 1; i++) {
         setItem((pre) => [...pre, {}])
       }
-
     } else {
       idRef.current = ''
     }
@@ -308,7 +321,7 @@ const AddGoods: React.FC<ModalProps> = (props: ModalProps) => {
             name="code"
             rules={[
               { required: true, message: '套餐编号不为空' },
-              { pattern:/^[0-9A-Z]{6,12}$/, message: '套餐编号格式错误' }
+              { pattern: /^[0-9A-Z]{6,12}$/, message: '套餐编号格式错误' }
             ]}
           >
             <Input></Input>
@@ -354,7 +367,6 @@ const AddGoods: React.FC<ModalProps> = (props: ModalProps) => {
           <Form.Item label="折扣列表" name="discountId">
             <Select
               options={options}
-
               placeholder="选择折扣信息"
               style={{ width: '68%' }}
             ></Select>
@@ -367,12 +379,11 @@ const AddGoods: React.FC<ModalProps> = (props: ModalProps) => {
             getValueFromEvent={normFile}
           >
             <Upload
-              action="http://127.0.0.1/goods/upload-photo"
-              headers={headers}
               listType="picture-card"
               showUploadList={false}
               beforeUpload={beforeUpload}
               onChange={handleChange}
+              customRequest={uploadFile}
             >
               {imageUrl ? (
                 <img

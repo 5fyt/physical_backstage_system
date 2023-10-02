@@ -21,7 +21,7 @@ class HYRequest {
         if (token) {
           config.headers.token = token
         }
-        config.headers['Content-Type'] = 'application/x-www-form-urlencoded'
+       
         return config
       },
       (err) => {

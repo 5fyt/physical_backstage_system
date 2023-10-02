@@ -1,5 +1,5 @@
 import hyRequest from '..'
-import { addParams ,deleteParams} from '../types/user'
+import { addParams, deleteParams } from '../types/user'
 
 /**
  *
@@ -9,6 +9,9 @@ import { addParams ,deleteParams} from '../types/user'
 export const searchUser = (data = { page: 1, size: 6 }, type: string) => {
   return hyRequest.post({
     url: `/${type}/search`,
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
     data
   })
 }
@@ -21,6 +24,9 @@ export const searchUser = (data = { page: 1, size: 6 }, type: string) => {
 export const addUser = (data: addParams, type: string) => {
   return hyRequest.post({
     url: `/${type}/create`,
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
     data
   })
 }
@@ -34,6 +40,9 @@ export const addUser = (data: addParams, type: string) => {
 export const deleteUser = (data: deleteParams, type: string) => {
   return hyRequest.post({
     url: `/${type}/delete`,
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
     data
   })
 }

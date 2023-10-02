@@ -67,7 +67,7 @@ export const goodsSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(searchGoodsAsync.fulfilled, (state, { payload }) => {
       state.totalCount = payload.data?.total
-      const results = payload.data?.results
+      const results = payload.data?.goodsList
       state.results = results?.map((item: any) => {
         return { ...item, key: item.id }
       })

@@ -23,7 +23,6 @@ const UpdatePassword: React.FC<ModalProps> = (props: ModalProps) => {
 
   const handleOk = () => {
     formRef.current?.validateFields().then((value: FieldType) => {
-    
       const { oldPassword, newPassword, confirmPassword } = value
       if (newPassword !== confirmPassword) {
         messageApi.error('两次密码输入不一致请重新输入')
@@ -32,6 +31,7 @@ const UpdatePassword: React.FC<ModalProps> = (props: ModalProps) => {
         updatePassword({ oldPassword, newPassword }, type).then((res) => {
           if (res.code === 200) {
             messageApi.success('修改密码成功')
+            formRef.current?.resetFields()
             setVisible(false)
           } else {
             messageApi.error('修改失败')
@@ -42,6 +42,7 @@ const UpdatePassword: React.FC<ModalProps> = (props: ModalProps) => {
   }
   const showModal = () => {
     setVisible(true)
+    formRef.current?.resetFields()
   }
 
   return (

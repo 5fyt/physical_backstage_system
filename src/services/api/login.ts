@@ -9,6 +9,9 @@ import type { loginParams, passwordParams, photoParams } from '../types/login'
 export const login = (data: loginParams, type: string) => {
   return hyRequest.post({
     url: `/${type}/login`,
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
     data
   })
 }
@@ -19,7 +22,10 @@ export const login = (data: loginParams, type: string) => {
  */
 export const loginOut = (type: string) => {
   return hyRequest.post({
-    url: `/${type}/logout`
+    url: `/${type}/logout`,
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    }
   })
 }
 
@@ -31,6 +37,9 @@ export const loginOut = (type: string) => {
 export const updatePassword = (data: passwordParams, type: string) => {
   return hyRequest.post({
     url: `/${type}/change-password`,
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
     data
   })
 }
@@ -42,6 +51,9 @@ export const updatePassword = (data: passwordParams, type: string) => {
 export const updatePhoto = (data: photoParams, type: string) => {
   return hyRequest.post({
     url: `/${type}/update-photo`,
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
     data
   })
 }
@@ -54,6 +66,9 @@ export const updatePhoto = (data: photoParams, type: string) => {
 export const loadPhoto = (data: any, type: string) => {
   return hyRequest.post({
     url: `${type}/apply-upload-photo`,
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
     data
   })
 }

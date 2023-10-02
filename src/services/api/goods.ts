@@ -1,5 +1,12 @@
 import hyRequest from '..'
-import { Type, updateParams, addParams, statusParams } from '../types/goods'
+import {
+  Type,
+  updateParams,
+  addParams,
+  statusParams,
+  UploadType,
+  UpdateType
+} from '../types/goods'
 import { deleteParams } from '../types/user'
 
 /**
@@ -47,6 +54,9 @@ export const getGoodsInfo = (id: string) => {
 export const searchGoods = (data = { page: 1, size: 10 }) => {
   return hyRequest.post({
     url: '/goods/admin/search',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
     data
   })
 }
@@ -69,6 +79,9 @@ export const updateGoods = (data: updateParams<Type>) => {
 export const changeStatus = (data: statusParams) => {
   return hyRequest.post({
     url: '/goods/change-status',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
     data
   })
 }
@@ -80,6 +93,9 @@ export const changeStatus = (data: statusParams) => {
 export const deleteGoods = (data: deleteParams) => {
   return hyRequest.post({
     url: '/goods/delete',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
     data
   })
 }
@@ -91,6 +107,7 @@ export const deleteGoods = (data: deleteParams) => {
 export const addGoods = (data: addParams<Type>) => {
   return hyRequest.post({
     url: '/goods/create',
+
     data
   })
 }
@@ -99,19 +116,62 @@ export const addGoods = (data: addParams<Type>) => {
  * @param data  file,id
  * @returns
  */
-export const uploadExl = (data: any) => {
+export const uploadExl = (data: UploadType) => {
   return hyRequest.post({
     url: '/goods/upload-excel',
+
     data
   })
 }
 /**
- * 获取exeel文档url
+ * 获取excel文档url
  * @param id
  * @returns
  */
 export const getExUrl = (id: string) => {
   return hyRequest.get({
     url: `/goods/excel-url/${id}`
+  })
+}
+/**
+ *更新excel文档
+ * @param data
+ * @returns
+ */
+export const updateExcel = (data: UpdateType) => {
+  return hyRequest.post({
+    url: '/goods/update-excel',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    data
+  })
+}
+/**
+ * 上传excel
+ * @param data
+ * @returns
+ */
+export const loadExcel = (data: UploadType) => {
+  return hyRequest.post({
+    url: '/goods/apply-upload-excel',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    data
+  })
+}
+/**
+ * 上传套餐图片
+ * @param data
+ * @returns
+ */
+export const loadPhoto = (data: UploadType) => {
+  return hyRequest.post({
+    url: '/goods/apply-upload-photo',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    data
   })
 }

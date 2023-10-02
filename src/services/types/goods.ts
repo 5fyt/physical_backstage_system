@@ -50,3 +50,11 @@ export type statusParams = {
   id: string
   status: number
 }
+export type UploadType = {
+  suffix: string
+  id?: string
+}
+export type UpdateType = {
+  id: string
+  path: string
+}

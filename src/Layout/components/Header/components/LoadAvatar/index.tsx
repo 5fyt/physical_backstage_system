@@ -17,34 +17,40 @@ const getBase64 = (img: RcFile, callback: (url: string) => void) => {
   reader.readAsDataURL(img)
 }
 
-const beforeUpload = (file: RcFile) => {
-  const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png'
-  if (!isJpgOrPng) {
-    message.error('你只能上传jepg和png格式的图片!')
-  }
-  const isLt2M = file.size / 1024 / 1024 < 2
-  if (!isLt2M) {
-    message.error('图片大小不能超过2M')
-  }
-  return isJpgOrPng && isLt2M
-}
 const LoadAvatar: React.FC<ModalProps> = (props: ModalProps) => {
   const [visible, setVisible] = useState(false)
   const [loading, setLoading] = useState(false)
   const [imageUrl, setImageUrl] = useState<string>()
-
+  const imageRef = useRef<any>(imageUrl)
+  const [suffix, setSuffix] = useState('')
   const dispatch = useAppDispatch()
   const [messageApi, contextHolder] = message.useMessage()
   const [path, setPath] = useState('')
-  const headers = {
-    token: localStorage.getItem('token') as string,
-    'Content-Type': 'application/x-www-form-urlencoded'
-  }
+  // const headers = {
+  //   token: localStorage.getItem('token') as string,
+  //   'Content-Type': 'application/x-www-form-urlencoded'
+  // }
   //将子组件上的方法暴露给父组件，类型于Vue中defineExpose({})
   useImperativeHandle(props.innerRef, () => ({
     showModal
   }))
-
+  const beforeUpload = (file: RcFile) => {
+    const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png'
+    const type = file.type.split('/')[1]
+    if (type === 'jpeg' || type === 'jpg') {
+      setSuffix('jpeg')
+    } else {
+      setSuffix(type)
+    }
+    if (!isJpgOrPng) {
+      message.error('你只能上传jepg和png格式的图片!')
+    }
+    const isLt2M = file.size / 1024 / 1024 < 2
+    if (!isLt2M) {
+      message.error('图片大小不能超过2M')
+    }
+    return isJpgOrPng && isLt2M
+  }
   const handleOk = async () => {
     dispatch(updateAavatar({ path })).then((res) => {
       if (res.payload.code === 200) {
@@ -69,16 +75,20 @@ const LoadAvatar: React.FC<ModalProps> = (props: ModalProps) => {
     if (info.file.status === 'uploading') {
       getBase64(info.file.originFileObj as RcFile, (url) => {
         setLoading(false)
+        imageRef.current = info.file.originFileObj
         setImageUrl(url)
       })
     }
   }
   const uploadFile = async (file: any) => {
-    const formData = new FormData()
-    console.log(formData)
-    formData.append('suffix', 'jpg')
+    const dataObj = {
+      suffix
+    }
     const type = localStorage.getItem('type') as string
-    const { code, data } = await loadPhoto(formData, type)
+    const { code, data } = await loadPhoto(dataObj, type)
+    const url = data?.url
+    console.log(imageRef)
+    axios.put(url, imageRef.current)
     if (code === 200) {
       setPath(data.path)
     }
@@ -97,7 +107,6 @@ const LoadAvatar: React.FC<ModalProps> = (props: ModalProps) => {
         <Upload
           listType="picture-card"
           showUploadList={false}
-          headers={headers}
           onChange={handleChange}
           beforeUpload={beforeUpload}
           customRequest={uploadFile}
