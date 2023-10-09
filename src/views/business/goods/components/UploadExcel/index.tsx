@@ -4,12 +4,16 @@ import { UploadOutlined } from '@ant-design/icons'
 import type { UploadFile, UploadProps, RcFile } from 'antd/es/upload/interface'
 import { getExUrl, loadExcel, updateExcel } from '@/services/api/goods'
 import axios from 'axios'
+import { useAppSelector } from '@/stores'
+import { pageIndex, pageSize } from '@/stores/module/goods'
 interface ModalProps {
   innerRef: Ref<{ showModal: (value: any) => void }>
-  loadList: () => void
+  loadList: (value?: any) => void
 }
 
 const UploadExcel: React.FC<ModalProps> = ({ innerRef, loadList }) => {
+  const page=useAppSelector(pageIndex)
+  const size=useAppSelector(pageSize)
   const [loading, setLoading] = useState(false)
   const [record, setRecord] = useState<any>(null)
   const [path, setPath] = useState('')
@@ -63,7 +67,7 @@ const UploadExcel: React.FC<ModalProps> = ({ innerRef, loadList }) => {
     setPath(data.path)
     const { code } = await updateExcel(fileData)
     if (code === 200) {
-      loadList()
+      loadList({page,size})
       setHasExcel(true)
       message.success(`${file.name}文件上传成功`)
     }

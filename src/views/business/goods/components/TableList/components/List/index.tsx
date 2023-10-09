@@ -3,12 +3,7 @@ import { Table, Space, Switch, Button, message } from 'antd'
 import type { ColumnsType, TableProps } from 'antd/es/table'
 import Style from '../styles/list.module.scss'
 import { useAppDispatch, useAppSelector } from '@/stores'
-import {
-  pageIndex,
-  pageSize,
-
-  updatePage
-} from '@/stores/module/goods'
+import { pageIndex, pageSize, updatePage } from '@/stores/module/goods'
 import { results, totalCount } from '@/stores/module/goods'
 import { SizeType } from 'antd/es/config-provider/SizeContext'
 import { changeStatus, deleteGoods } from '@/services/api/goods'
@@ -138,7 +133,7 @@ const List: React.FC<Iprop> = ({ checkKeys, show, loadList, sz, addShow }) => {
             <Switch
               onClick={(value) => switchHandle(value, record)}
               checkedChildren="上架"
-              checked={text === 1 ? true : false}
+              checked={record.status === 1 ? true : false}
               unCheckedChildren="下架"
               defaultChecked
             />
@@ -220,9 +215,9 @@ const List: React.FC<Iprop> = ({ checkKeys, show, loadList, sz, addShow }) => {
       await changeStatus(data)
       const status = Number(localStorage.getItem('status'))
       if (status !== 0) {
-        loadList({ status: status })
+        loadList({ page: 1, size, status: status })
       } else {
-        loadList()
+        loadList({ page, size })
       }
     } catch (err) {
       console.log(err)

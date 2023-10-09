@@ -31,7 +31,8 @@ import {
   discountList,
   getGoodsInfo,
   getSorts,
-  loadPhoto
+  loadPhoto,
+  getTypes
 } from '@/services/api/goods'
 import { transReserve, transResults } from '@/utils/transData'
 import { useAppDispatch } from '@/stores'
@@ -60,6 +61,7 @@ const AddGoods: React.FC<ModalProps> = (props: ModalProps) => {
   const [suffix, setSuffix] = useState('')
   const [options, setOptions] = useState([])
   const [sortOp, setSortOp] = useState([])
+  const [type,setType]=useState([])
   const [tags, setTags] = useState<string[]>([])
   const [item, setItem] = useState([{}])
   const [loading, setLoading] = useState(false)
@@ -67,12 +69,10 @@ const AddGoods: React.FC<ModalProps> = (props: ModalProps) => {
   const [imageUrl, setImageUrl] = useState<string>()
   const formRef = useRef<any>()
   const idRef = useRef<string>('')
-  const imageFile=useRef<any>()
+  const imageFile = useRef<any>()
   const [form] = Form.useForm()
   const dispatch = useAppDispatch()
-  const headers = {
-    token: localStorage.getItem('token') as string
-  }
+
   const uploadButton = (
     <div>
       {loading ? <LoadingOutlined /> : <PlusOutlined />}
@@ -82,6 +82,18 @@ const AddGoods: React.FC<ModalProps> = (props: ModalProps) => {
   useImperativeHandle(props.innerRef, () => ({
     showModal
   }))
+  //获取商品类型列表
+  const getTypeList=async ()=>{
+    try {
+      const { data } = await getTypes()
+      const types = data?.types.map((item: any) => {
+        return { label: item.name, value: item.type }
+      })
+      setType(types)
+    } catch (err) {
+      console.error(err)
+    }
+  }
   //获取打折列表
   const getDisList = async () => {
     try {
@@ -129,7 +141,7 @@ const AddGoods: React.FC<ModalProps> = (props: ModalProps) => {
     if (info.file.status === 'uploading') {
       getBase64(info.file.originFileObj as RcFile, (url) => {
         setLoading(false)
-        imageFile.current=info.file.originFileObj
+        imageFile.current = info.file.originFileObj
         setImageUrl(url)
       })
     }
@@ -147,6 +159,7 @@ const AddGoods: React.FC<ModalProps> = (props: ModalProps) => {
   }
   //打开弹出层
   const showModal = async (value: any) => {
+    setImageUrl('')
     if (typeof value === 'string') {
       console.log(value)
       idRef.current = value
@@ -190,7 +203,6 @@ const AddGoods: React.FC<ModalProps> = (props: ModalProps) => {
   //提交表单
   const handleOk = () => {
     formRef.current?.validateFields().then((value: any) => {
-      console.log(value)
       const {
         name,
         code,
@@ -227,7 +239,7 @@ const AddGoods: React.FC<ModalProps> = (props: ModalProps) => {
             formRef.current?.resetFields()
             setOpen(false)
           } else {
-            message.error(res.payload.message)
+            message.error(res.payload.message+'请重新上传图片')
           }
         })
       } else {
@@ -247,6 +259,7 @@ const AddGoods: React.FC<ModalProps> = (props: ModalProps) => {
         dispatch(createGoodsAsync(data)).then((res) => {
           if (res.payload.code === 200) {
             message.success('添加成功')
+            setImageUrl('')
             props.loadList()
             formRef.current?.resetFields()
             setOpen(false)
@@ -278,6 +291,7 @@ const AddGoods: React.FC<ModalProps> = (props: ModalProps) => {
   useEffect(() => {
     getDisList()
     getSortList()
+    getTypeList()
   }, [])
 
   return (
@@ -324,7 +338,7 @@ const AddGoods: React.FC<ModalProps> = (props: ModalProps) => {
               { pattern: /^[0-9A-Z]{6,12}$/, message: '套餐编号格式错误' }
             ]}
           >
-            <Input></Input>
+            <Input placeholder="28889GGG"></Input>
           </Form.Item>
           <Form.Item label="简介信息" name="description">
             <TextArea rows={3} />
@@ -400,13 +414,7 @@ const AddGoods: React.FC<ModalProps> = (props: ModalProps) => {
             <Select
               placeholder="检查类别"
               style={{ width: '68%' }}
-              options={[
-                { label: '父母体检', value: 1 },
-                { label: '入职体检', value: 2 },
-                { label: '职场白领', value: 3 },
-                { label: '个人高端', value: 4 },
-                { label: '中青年体检', value: 5 }
-              ]}
+              options={type}
             ></Select>
           </Form.Item>
 
