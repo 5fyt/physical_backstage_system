@@ -10,7 +10,8 @@ const PhysicalRouter: RouteConfig = {
       path: 'reserve',
       element: lazyLoad(lazy(() => import('@/views/physical/reserve'))),
       auth: true
-    }
+    },
+    
   ]
 }
 export default PhysicalRouter

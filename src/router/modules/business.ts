@@ -10,6 +10,11 @@ const BusinessRouter: RouteConfig = {
       path: 'goods',
       element: lazyLoad(lazy(() => import('@/views/business/goods'))),
       auth: true
+    },
+    {
+      path: 'rules',
+      element: lazyLoad(lazy(() => import('@/views/business/rules'))),
+      auth: true
     }
   ]
 }

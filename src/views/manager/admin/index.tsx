@@ -5,7 +5,7 @@ import { Avatar, List, Button, Input, message } from 'antd'
 import { useAppDispatch, useAppSelector } from '@/stores'
 import { results, searchUserAsync, totalCount } from '@/stores/module/admin'
 import AddUser from '@/baseUI/components/AddUser'
-import { searchParams } from '@/services/types/user'
+
 import { deleteUser } from '@/services/api/admin'
 const { Search } = Input
 
